@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mount Kiwi - View Orders</title>
+  <link rel="stylesheet" href="styles.css" />
+  
+  <!-- Firebase compat SDKs for use without modules -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <style>
+    .view-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .orders-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+    }
+    .orders-table th, .orders-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+      font-size: 0.9rem;
+    }
+    .orders-table th {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      font-weight: 600;
+    }
+    .orders-table tr:last-child td {
+      border-bottom: none;
+    }
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: white;
+    }
+    .status-pending {
+      background-color: #ff6b6b;
+    }
+    .status-completed {
+      background-color: #51cf66;
+    }
+    .priority-high {
+      color: #d9480f;
+      font-weight: 600;
+    }
+    .priority-normal {
+      color: #555;
+    }
+  </style>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAONyQ-NzS4b40Bqeu7AqIWbelPKg9k_wo",
+      authDomain: "sofix-8957d.firebaseapp.com",
+      projectId: "sofix-8957d",
+      storageBucket: "sofix-8957d.firebasestorage.app",
+      messagingSenderId: "156447440286",
+      appId: "1:156447440286:web:e3ebbbf9b52ce7e4b4aa8f"
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+</head>
+
+<body>
+  <header class="header">
+    <img src="icons/mountkiwi.png" alt="Mount Kiwi Logo" class="logo" onerror="this.style.display='none'">
+    <h1 class="main-title">Mount Kiwi</h1>
+    <p class="subtitle">View Orders</p>
+  </header>
+
+  <main style="width: 100%; max-width: 1200px; margin: 0 auto;">
+    <div class="view-header">
+      <h2>Active Orders</h2>
+    </div>
+    <table class="orders-table" id="orders-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Variety</th>
+          <th>Colour</th>
+          <th>Size</th>
+          <th>Quantity</th>
+          <th>Status</th>
+          <th>Priority</th>
+          <th>Notes</th>
+          <th>Submitted</th>
+        </tr>
+      </thead>
+      <tbody id="orders-body">
+        <!-- Populated by JS -->
+      </tbody>
+    </table>
+  </main>
+
+  <script>
+    const tbody = document.getElementById('orders-body');
+
+    db.collection('orders').doc('mountKiwi').get()
+  .then(doc => {
+    if (doc.exists) {
+      const data = doc.data();
+      const orderArray = data.orders || [];
+
+      orderArray.forEach(order => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+          <td>${order.type}</td>
+          <td>${order.variety}</td>
+          <td>${order.colour}</td>
+          <td>${order.size}</td>
+          <td>${order.quantity}</td>
+          <td><span class="status-badge status-${(order.status || 'pending').toLowerCase()}">${order.status || 'Pending'}</span></td>
+          <td class="priority-${(order.priority || 'normal').toLowerCase()}">${order.priority || 'Normal'}</td>
+          <td>${order.notes || ''}</td>
+          <td>${order.timestamp?.toDate().toLocaleString() || 'No Date'}</td>
+        `;
+
+        tbody.appendChild(row);
+      });
+    } else {
+      console.warn("No such document!");
+    }
+  })
+  .catch(err => {
+    console.error('Failed to load orders:', err);
+    tbody.innerHTML = `<tr><td colspan="9" style="color: red;">Failed to load orders.</td></tr>`;
+  });
+
+  </script>
+</body>
+</html>

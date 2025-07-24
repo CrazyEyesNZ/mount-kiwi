@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mount Kiwi - Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      width: 100%;
+      margin-top: 40px;
+    }
+
+    .nav-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 30px;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+    }
+
+    .nav-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 45px rgba(102,126,234,0.3);
+      border-color: #667eea;
+    }
+
+    .nav-card.active {
+      background: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.1));
+      border-color: #667eea;
+    }
+
+    .nav-card.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .nav-card.disabled:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: transparent;
+    }
+
+    .nav-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 20px auto;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+    }
+
+    .nav-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .nav-description {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .coming-soon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #ff6b6b;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+  </style>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+  <script>
+    // MountKiwi Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAONyQ-NzS4b40Bqeu7AqIWbelPKg9k_wo",
+      authDomain: "sofix-8957d.firebaseapp.com",
+      projectId: "sofix-8957d",
+      storageBucket: "sofix-8957d.firebasestorage.app",
+      messagingSenderId: "156447440286",
+      appId: "1:156447440286:web:e3ebbbf9b52ce7e4b4aa8f"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+</head>
+<body>
+  <header class="header">
+    <img src="icons/mountkiwi.png" alt="Mount Kiwi Logo" class="logo" onerror="this.style.display='none'">
+    <h1 class="main-title">Mount Kiwi</h1>
+    <p class="subtitle">Stock & Order Management System</p>
+  </header>
+
+  <main class="nav-grid">
+    <a href="MKOrders.html" class="nav-card active">
+      <div class="nav-icon">🛍️</div>
+      <div class="nav-title">Make an Order</div>
+      <div class="nav-description">Browse products and submit orders with drag-and-drop.</div>
+    </a>
+
+    <a href="MKView.html" class="nav-card active">
+      <div class="nav-icon">📋</div>
+      <div class="nav-title">View Orders</div>
+      <div class="nav-description">Review all submitted orders in a structured table view.</div>
+    </a>
+
+    <div class="nav-card disabled">
+      <div class="coming-soon">Coming Soon</div>
+      <div class="nav-icon">📊</div>
+      <div class="nav-title">Show Progress</div>
+      <div class="nav-description">Track the status and progress of orders in real-time.</div>
+    </div>
+
+    <div class="nav-card disabled">
+      <div class="coming-soon">Coming Soon</div>
+      <div class="nav-icon">📦</div>
+      <div class="nav-title">Packaging</div>
+      <div class="nav-description">Manage packaging, label printing, and packing status.</div>
+    </div>
+
+    <div class="nav-card disabled">
+      <div class="coming-soon">Coming Soon</div>
+      <div class="nav-icon">🚚</div>
+      <div class="nav-title">Shipping</div>
+      <div class="nav-description">Track delivery and manage courier services.</div>
+    </div>
+  </main>
+
+  <script>
+    document.querySelectorAll('.nav-card.disabled').forEach(card => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('This feature is coming soon!');
+      });
+    });
+  </script>
+</body>
+</html>

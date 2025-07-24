@@ -1,0 +1,501 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-01-24T12:00:00Z",
+    "dataFormat": "mount-kiwi-v1",
+    "description": "Mount Kiwi Stock & Order Management System Data"
+  },
+  "config": {
+    "companyName": "Mount Kiwi",
+    "currency": "NZD",
+    "defaultOrderStatus": "Pending",
+    "maxQuantityPerSize": 50,
+    "features": {
+      "makeOrder": true,
+      "showProgress": false,
+      "viewOrders": false,
+      "packaging": false,
+      "shipping": false
+    }
+  },
+  "productCatalog": [
+    {
+      "type": "Jackets",
+      "icon": "jackets.png",
+      "varieties": [
+        {
+          "name": "50 Shades",
+          "image": "50 Shades.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Alpine",
+          "image": "Alpine.png",
+          "colours": ["Brown", "Charcoal"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Arrowtown",
+          "image": "Arrowtown.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Byron Bay",
+          "image": "Byron Bay.png",
+          "colours": ["Black", "(65-10) Blue", "Grey"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Coronet Peak",
+          "image": "Coronet Peak.png",
+          "colours": ["Blue", "Cherry"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Fiordland",
+          "image": "Fiordland.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Glacier",
+          "image": "Glacier.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Koru",
+          "image": "Koru.png",
+          "colours": ["Brown", "Charcoal", "Grey"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Nambassa",
+          "image": "Nambassa.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Piha",
+          "image": "Piha.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Punakaiki",
+          "image": "Punakaiki.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Raglan Wave",
+          "image": "Raglan Wave.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Riverstone",
+          "image": "Riverstone.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Sherpa",
+          "image": "Sherpa.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Southern Alps",
+          "image": "Southern Alps.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Sutherland",
+          "image": "Sutherland.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Te Anau",
+          "image": "Te Anau.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Tekapo",
+          "image": "Tekapo.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Waiouru",
+          "image": "Waiouru.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Whale Bay",
+          "image": "Whale Bay.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Whistler",
+          "image": "Whistler.png",
+          "colours": ["Base"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        }
+      ]
+    },
+    {
+      "type": "Shawls",
+      "icon": "shawls.png",
+      "varieties": [
+        {
+          "name": "Aqua Marine",
+          "image": "Shawl Aqua Marine.png",
+          "colours": ["Base"],
+          "sizes": ["One"]
+        },
+        {
+          "name": "Black",
+          "image": "Shawl Black.png",
+          "colours": ["Base"],
+          "sizes": ["One"]
+        },
+        {
+          "name": "Chai",
+          "image": "Shawl Chai.png",
+          "colours": ["Base"],
+          "sizes": ["One"]
+        },
+        {
+          "name": "Charcoal",
+          "image": "Shawl Charcoal.png",
+          "colours": ["Base"],
+          "sizes": ["One"]
+        },
+        {
+          "name": "Cream",
+          "image": "Shawl Cream.png",
+          "colours": ["Base"],
+          "sizes": ["One"]
+        },
+        {
+          "name": "Forest",
+          "image": "Shawl Forest.png",
+          "colours": ["Base"],
+          "sizes": ["One"]
+        },
+        {
+          "name": "Grey",
+          "image": "Shawl Grey.png",
+          "colours": ["Base"],
+          "sizes": ["One"]
+        },
+        {
+          "name": "Navy",
+          "image": "Shawl Navy.png",
+          "colours": ["Base"],
+          "sizes": ["One"]
+        },
+        {
+          "name": "Natural",
+          "image": "Shawl Natural.png",
+          "colours": ["Base"],
+          "sizes": ["One"]
+        },
+        {
+          "name": "Olive",
+          "image": "Shawl Olive.png",
+          "colours": ["Base"],
+          "sizes": ["One"]
+        },
+        {
+          "name": "Plum",
+          "image": "Shawl Plum.png",
+          "colours": ["Base"],
+          "sizes": ["One"]
+        },
+        {
+          "name": "Rust",
+          "image": "Shawl Rust.png",
+          "colours": ["Base"],
+          "sizes": ["One"]
+        }
+      ]
+    },
+    {
+      "type": "Rain Jacket",
+      "icon": "rain-jacket.png",
+      "varieties": [
+        {
+          "name": "Rain Jacket",
+          "image": "Rain Jacket.png",
+          "colours": ["Navy/Grey", "Maroon/Grey", "Green/Grey", "Black", "Black/Grey", "Aqua"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        }
+      ]
+    },
+    {
+      "type": "Woodville Stitch",
+      "icon": "woodville-stitch.png",
+      "varieties": [
+        {
+          "name": "Woodville Stitch",
+          "image": "Woodville Stitch.png",
+          "colours": ["Black", "Blue New", "Forest Green", "Grey"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        }
+      ]
+    },
+    {
+      "type": "Station",
+      "icon": "station.png",
+      "varieties": [
+        {
+          "name": "Station",
+          "image": "Station.png",
+          "colours": ["Brown Mix", "Char/Brown", "Char/Grey", "Charcoal", "Dark Nat Brown", "Grey", "Natural Brown"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        }
+      ]
+    },
+    {
+      "type": "Coastal",
+      "icon": "coastal.png",
+      "varieties": [
+        {
+          "name": "Coastal",
+          "image": "Coastal.png",
+          "colours": ["Black", "Brown", "Charcoal", "Dark Natural", "Denim", "Forest", "Grey", "Natural Brown", "Olive", "Orange"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        }
+      ]
+    },
+    {
+      "type": "Weekender",
+      "icon": "weekender.png",
+      "varieties": [
+        {
+          "name": "Weekender",
+          "image": "Weekender.png",
+          "colours": ["50 Shades", "Black", "Burnt Orange", "Charcoal", "Cherry", "Dark Brown", "Forest Green", "Natural Brown", "Petrol"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        }
+      ]
+    },
+    {
+      "type": "Kids Jacket",
+      "icon": "kids-jacket.png",
+      "varieties": [
+        {
+          "name": "Carnival",
+          "image": "Carnival.png",
+          "colours": ["Multi"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Lollipop",
+          "image": "Lollipop.png",
+          "colours": ["Mixed"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Wave Rider",
+          "image": "Wave Rider.png",
+          "colours": ["Blue", "Orange", "New Green"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Rainbow",
+          "image": "Rainbow.png",
+          "colours": ["Multi"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        },
+        {
+          "name": "Jungle",
+          "image": "Jungle.png",
+          "colours": ["Green"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        }
+      ]
+    },
+    {
+      "type": "Vest",
+      "icon": "vest.png",
+      "varieties": [
+        {
+          "name": "Vest",
+          "image": "Vest.png",
+          "colours": ["Charcoal", "Black", "Forest", "Navy"],
+          "sizes": ["S", "M", "L", "XL", "XXL", "3XL"]
+        }
+      ]
+    },
+    {
+      "type": "Tonga Beanie",
+      "icon": "tonga-beanie.png",
+      "varieties": [
+        {
+          "name": "Tongariro Beanie",
+          "image": "Tongariro Beanie.png",
+          "colours": ["Charcoal Grey", "Charcoal Black", "Charcoal Forest", "Charcoal Teal"],
+          "sizes": ["One"]
+        }
+      ]
+    },
+    {
+      "type": "Koru Beanie",
+      "icon": "koru-beanie.png",
+      "varieties": [
+        {
+          "name": "Koru Beanie",
+          "image": "Koru Beanie.png",
+          "colours": ["Charcoal"],
+          "sizes": ["One"]
+        }
+      ]
+    },
+    {
+      "type": "House Socks",
+      "icon": "house-socks.png",
+      "varieties": [
+        {
+          "name": "Alpine",
+          "image": "House Socks - Alpine.png",
+          "colours": ["Base"],
+          "sizes": ["S/M", "L"]
+        },
+        {
+          "name": "Arrowtown",
+          "image": "House Socks - Arrowtown.png",
+          "colours": ["Base"],
+          "sizes": ["S/M", "L"]
+        },
+        {
+          "name": "Marshmallow",
+          "image": "House Socks - Marshmallow.png",
+          "colours": ["Base"],
+          "sizes": ["S/M", "L"]
+        },
+        {
+          "name": "Nature",
+          "image": "House Socks - Nature.png",
+          "colours": ["Base"],
+          "sizes": ["S/M", "L"]
+        },
+        {
+          "name": "Nordic",
+          "image": "House Socks - Nordic.png",
+          "colours": ["Base"],
+          "sizes": ["S/M", "L"]
+        },
+        {
+          "name": "Rainbow",
+          "image": "House Socks - Rainbow.png",
+          "colours": ["Base"],
+          "sizes": ["S/M", "L"]
+        },
+        {
+          "name": "Wave Rider",
+          "image": "House Socks - Wave Rider.png",
+          "colours": ["Base"],
+          "sizes": ["S/M", "L"]
+        }
+      ]
+    },
+    {
+      "type": "Sherpa Beanie",
+      "icon": "sherpa-beanie.png",
+      "varieties": [
+        {
+          "name": "Sherpa Beanie",
+          "image": "Sherpa Beanie.png",
+          "colours": ["Navy Mix"],
+          "sizes": ["One"]
+        }
+      ]
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "type": "Jackets",
+      "variety": "Alpine",
+      "colour": "Brown",
+      "size": "M",
+      "quantity": 2,
+      "status": "Pending",
+      "dateCreated": "2025-01-24T10:30:00Z",
+      "dateModified": "2025-01-24T10:30:00Z",
+      "notes": "",
+      "priority": "Normal"
+    },
+    {
+      "id": 2,
+      "type": "Shawls",
+      "variety": "Charcoal",
+      "colour": "Base",
+      "size": "One",
+      "quantity": 1,
+      "status": "Pending",
+      "dateCreated": "2025-01-24T11:15:00Z",
+      "dateModified": "2025-01-24T11:15:00Z",
+      "notes": "Rush order",
+      "priority": "High"
+    }
+  ],
+  "orderHistory": [
+    {
+      "id": 100,
+      "type": "Jackets",
+      "variety": "Koru",
+      "colour": "Grey",
+      "size": "L",
+      "quantity": 1,
+      "status": "Completed",
+      "dateCreated": "2025-01-20T09:00:00Z",
+      "dateCompleted": "2025-01-23T14:30:00Z",
+      "notes": "Sample order",
+      "priority": "Normal"
+    }
+  ],
+  "statistics": {
+    "totalOrders": 3,
+    "activeOrders": 2,
+    "completedOrders": 1,
+    "totalItems": 3,
+    "lastOrderId": 2,
+    "popularProducts": [
+      {
+        "type": "Jackets",
+        "variety": "Alpine",
+        "orderCount": 5
+      },
+      {
+        "type": "Shawls",
+        "variety": "Charcoal",
+        "orderCount": 3
+      }
+    ]
+  },
+  "settings": {
+    "autoSave": true,
+    "backupFrequency": "daily",
+    "notifications": {
+      "orderCreated": true,
+      "orderCompleted": true,
+      "lowStock": false
+    },
+    "display": {
+      "theme": "default",
+      "showImages": true,
+      "compactView": false
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "updatedAt": "2025-07-24T06:43:36.960Z",
+  "orders": [
+    {
+      "id": 1,
+      "type": "Shawls",
+      "variety": "Aqua Marine",
+      "colour": "Base",
+      "size": "One",
+      "quantity": 5,
+      "status": "Pending",
+      "viewed": false
+    },
+    {
+      "id": 2,
+      "type": "Shawls",
+      "variety": "Grey",
+      "colour": "Base",
+      "size": "One",
+      "quantity": 6,
+      "status": "Pending",
+      "viewed": false
+    }
+  ]
+}
