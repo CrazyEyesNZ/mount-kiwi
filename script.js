@@ -26,8 +26,45 @@ let overlayData = {};
 let typesGrid, varietiesSection, varietiesGrid, varietiesPlaceholder, colorsSection, colorsGrid, colorsPlaceholder;
 let ordersList, sizeOverlay, sizesGrid, selectedTypeTitle, selectedVarietyTitle;
 
+// Debug function to log Firebase connection status
+function testFirebaseConnection() {
+  console.log('Testing Firebase connection...');
+  
+  // Test if Firebase is loaded
+  if (typeof firebase === 'undefined') {
+    console.error('❌ Firebase is not loaded');
+    return false;
+  }
+  
+  // Test if Firestore is initialized
+  if (typeof db === 'undefined') {
+    console.error('❌ Firestore database is not initialized');
+    return false;
+  }
+  
+  // Test basic Firestore operation
+  db.collection('orders').doc('mountKiwi').get()
+    .then(doc => {
+      console.log('✅ Firebase connection successful');
+      console.log('Document exists:', doc.exists);
+      if (doc.exists) {
+        console.log('Current data:', doc.data());
+      }
+    })
+    .catch(error => {
+      console.error('❌ Firebase connection failed:', error);
+    });
+  
+  return true;
+}
+
 // Initialize when DOM is loaded
 window.addEventListener('DOMContentLoaded', () => {
+  console.log('🚀 Initializing Stock Order Tracker...');
+  
+  // Test Firebase connection first
+  testFirebaseConnection();
+  
   // Get DOM elements
   typesGrid = document.getElementById('types-grid');
   varietiesSection = document.getElementById('varieties-section');
@@ -44,9 +81,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Check if all elements exist
   if (!typesGrid || !varietiesSection || !varietiesGrid || !colorsSection || !colorsGrid || !ordersList) {
-    console.error('Missing DOM elements. Check HTML structure.');
+    console.error('❌ Missing DOM elements. Check HTML structure.');
     return;
   }
+
+  console.log('✅ All DOM elements found');
 
   // Initialize interface
   renderProductTypes();
@@ -59,13 +98,17 @@ window.addEventListener('DOMContentLoaded', () => {
   // Set up navigation
   setActiveButton();
   setupNavigationHandlers();
+  
+  console.log('✅ Initialization complete');
 });
 
-// Load saved (non-submitted) orders back into the interface
+// Enhanced load saved orders with better error handling
 async function loadSavedOrders() {
+  console.log('📥 Loading saved orders...');
+  
   // Only load saved orders if we don't already have orders in memory
   if (orders.length > 0) {
-    console.log('Orders already exist in memory, skipping auto-load');
+    console.log('📋 Orders already exist in memory, skipping auto-load');
     return;
   }
 
@@ -79,11 +122,16 @@ async function loadSavedOrders() {
         // Restore the orders array
         orders = savedOrders;
         renderOrders();
-        console.log(`Loaded ${savedOrders.length} saved orders`);
+        console.log(`✅ Loaded ${savedOrders.length} saved orders`);
+      } else {
+        console.log('📋 No saved orders found');
       }
+    } else {
+      console.log('📋 No document found, starting fresh');
     }
   } catch (error) {
-    console.error('Error loading saved orders:', error);
+    console.error('❌ Error loading saved orders:', error);
+    showMessage('Failed to load saved orders ❌', 'error');
   }
 }
 
@@ -570,14 +618,18 @@ function closeOverlay() {
   overlayData = {};
 }
 
-// Add selected items to orders
+// Enhanced Add selected items to orders with better debugging
 function addToOrders() {
+  console.log('🛒 Adding to orders...', overlayData.selectedSizes);
+  
   const hasSelections = Object.values(overlayData.selectedSizes).some(qty => qty > 0);
   const isEditingExistingOrder = orders.some(order => 
     order.type === overlayData.type &&
     order.variety === overlayData.variety &&
     order.colour === overlayData.color
   );
+  
+  console.log('Has selections:', hasSelections, 'Is editing:', isEditingExistingOrder);
   
   // Allow proceeding if editing existing order (even with all 0s to remove it)
   // or if there are selections for new orders
@@ -586,8 +638,12 @@ function addToOrders() {
     return;
   }
   
+  const originalOrdersCount = orders.length;
+  
   // Process each selected size
   Object.entries(overlayData.selectedSizes).forEach(([size, quantity]) => {
+    console.log(`Processing ${size}: ${quantity}`);
+    
     // Check if order already exists
     const existingOrderIndex = orders.findIndex(order => 
       order.type === overlayData.type &&
@@ -597,12 +653,14 @@ function addToOrders() {
     );
     
     if (existingOrderIndex >= 0) {
+      console.log(`Updating existing order at index ${existingOrderIndex}`);
       // Update existing order (including setting to 0)
       orders[existingOrderIndex].quantity = quantity;
     } else if (quantity > 0) {
+      console.log(`Creating new order for ${size}`);
       // Only create new order if quantity > 0
       orders.push({
-        id: orders.length + 1,
+        id: Date.now() + Math.random(), // Better unique ID
         type: overlayData.type,
         variety: overlayData.variety,
         colour: overlayData.color,
@@ -615,26 +673,46 @@ function addToOrders() {
   });
   
   // Remove orders with 0 quantity
+  const beforeFilter = orders.length;
   orders = orders.filter(order => order.quantity > 0);
+  const afterFilter = orders.length;
+  
+  console.log(`Orders before filter: ${beforeFilter}, after filter: ${afterFilter}`);
+  console.log('Final orders array:', orders);
   
   renderOrders();
   closeOverlay();
   
   // Auto-save after any change
+  console.log('🔄 Triggering auto-save...');
   autoSaveOrders();
+  
+  // Show success message
+  if (orders.length > originalOrdersCount) {
+    showMessage('✅ Order added successfully!', 'success');
+  } else if (orders.length < originalOrdersCount) {
+    showMessage('✅ Order updated successfully!', 'success');
+  }
 }
 
-// Update grand total display
+// Enhanced Update grand total display with debug
 function updateGrandTotal() {
   const grandTotalElement = document.getElementById('grand-total');
-  if (!grandTotalElement) return;
+  if (!grandTotalElement) {
+    console.warn('Grand total element not found');
+    return;
+  }
   
   const totalQuantity = orders.reduce((total, order) => total + order.quantity, 0);
   grandTotalElement.textContent = `Total: ${totalQuantity}`;
+  
+  console.log(`📊 Grand total updated: ${totalQuantity} items across ${orders.length} orders`);
 }
 
-// Render active orders
+// Enhanced Render active orders with debug
 function renderOrders() {
+  console.log('🎨 Rendering orders...', orders.length, 'orders');
+  
   if (!ordersList) {
     console.error('Orders list element not found');
     return;
@@ -648,10 +726,15 @@ function renderOrders() {
   // Update submit button state
   const submitBtn = document.getElementById('submit-btn');
   if (submitBtn) {
-    submitBtn.disabled = orders.length === 0;
+    const shouldEnable = orders.length > 0;
+    submitBtn.disabled = !shouldEnable;
+    console.log(`🔘 Submit button ${shouldEnable ? 'enabled' : 'disabled'} (${orders.length} orders)`);
+  } else {
+    console.warn('Submit button not found');
   }
   
   if (orders.length === 0) {
+    console.log('📭 No orders to display');
     return; // No message when empty - just empty list
   }
   
@@ -688,6 +771,8 @@ function renderOrders() {
     // Finally by colour
     return a.colour.localeCompare(b.colour);
   });
+  
+  console.log(`📋 Rendering ${sortedOrders.length} grouped orders`);
   
   // Render sorted orders
   sortedOrders.forEach(groupedOrder => {
@@ -744,6 +829,8 @@ function renderOrders() {
     
     ordersList.appendChild(orderItem);
   });
+  
+  console.log('✅ Orders rendering complete');
 }
 
 // Edit an existing order by clicking on it
@@ -783,16 +870,26 @@ function editOrder(orderType, orderVariety, orderColour) {
 // Auto-save functionality
 let autoSaveTimeout = null;
 
-// Debounced auto-save function (waits 1 second after last change)
+// Enhanced auto-save function with better debugging and error handling
 function autoSaveOrders() {
+  console.log('💾 Auto-save triggered...');
+  
   // Clear any existing timeout
   if (autoSaveTimeout) {
     clearTimeout(autoSaveTimeout);
+    console.log('⏰ Cleared previous auto-save timeout');
   }
   
   // Set new timeout
   autoSaveTimeout = setTimeout(async () => {
+    console.log('💾 Executing auto-save...');
+    
     try {
+      // Check if Firebase is available
+      if (typeof firebase === 'undefined' || typeof db === 'undefined') {
+        throw new Error('Firebase is not initialized');
+      }
+      
       const timestamp = firebase.firestore.Timestamp.now();
 
       // Always save, even if empty (to clear removed orders)
@@ -805,29 +902,41 @@ function autoSaveOrders() {
           timestamp: timestamp,
           status: 'Saved'
         }));
+        console.log(`💾 Preparing to save ${ordersWithTimestamp.length} orders`);
+      } else {
+        console.log('💾 Clearing saved orders (empty array)');
       }
 
       // Get existing data
+      console.log('📥 Fetching existing document...');
       const doc = await db.collection('orders').doc('mountKiwi').get();
       const existingData = doc.exists ? doc.data() : {};
+      console.log('📥 Existing data:', existingData);
 
       // Update the savedOrders array (even if empty)
-      await db.collection('orders').doc('mountKiwi').set({
+      const updateData = {
         ...existingData,
-        savedOrders: ordersWithTimestamp
-      });
+        savedOrders: ordersWithTimestamp,
+        lastModified: timestamp
+      };
+      
+      console.log('💾 Saving to Firebase...', updateData);
+      await db.collection('orders').doc('mountKiwi').set(updateData);
 
       // Show subtle auto-save indicator
       showAutoSaveIndicator();
+      console.log('✅ Auto-save successful!');
 
     } catch (err) {
-      console.error("Error auto-saving orders:", err);
+      console.error("❌ Error auto-saving orders:", err);
       showMessage("Auto-save failed ❌", "error");
     }
   }, 1000); // Wait 1 second after last change
+  
+  console.log('⏰ Auto-save scheduled for 1 second from now');
 }
 
-// Show a subtle auto-save indicator
+// Enhanced auto-save indicator
 function showAutoSaveIndicator() {
   // Create or update the auto-save indicator
   let indicator = document.getElementById('auto-save-indicator');
@@ -855,6 +964,7 @@ function showAutoSaveIndicator() {
   
   // Show the indicator
   indicator.style.opacity = '1';
+  console.log('✅ Auto-save indicator shown');
   
   // Hide after 2 seconds
   setTimeout(() => {
@@ -862,8 +972,10 @@ function showAutoSaveIndicator() {
   }, 2000);
 }
 
-// Submit orders (moves them to submitted and clears active orders)
+// Enhanced submit orders function with better error handling
 async function submitOrders() {
+  console.log('🚀 Submit orders triggered...', orders.length, 'orders');
+  
   if (orders.length === 0) {
     alert("No orders to submit.");
     return;
@@ -871,10 +983,12 @@ async function submitOrders() {
 
   // Confirm submission
   if (!confirm(`Submit ${orders.length} orders? This will move them to submitted orders and clear your active orders.`)) {
+    console.log('🚫 Submission cancelled by user');
     return;
   }
 
   try {
+    console.log('🚀 Processing submission...');
     const timestamp = firebase.firestore.Timestamp.now();
 
     // Add timestamp and mark as submitted
@@ -885,81 +999,40 @@ async function submitOrders() {
       submittedAt: timestamp
     }));
 
+    console.log('📥 Fetching existing data...');
     // Get existing data
     const doc = await db.collection('orders').doc('mountKiwi').get();
     const existingData = doc.exists ? doc.data() : {};
     const existingSubmitted = existingData.submittedOrders || [];
 
+    console.log(`💾 Saving ${ordersWithTimestamp.length} submitted orders...`);
     // Add to submitted orders and clear saved orders
     await db.collection('orders').doc('mountKiwi').set({
       ...existingData,
       submittedOrders: [...existingSubmitted, ...ordersWithTimestamp],
-      savedOrders: [] // Clear saved orders
+      savedOrders: [], // Clear saved orders
+      lastSubmission: timestamp
     });
 
     // Clear active orders from interface
+    const submittedCount = orders.length;
     orders = [];
     renderOrders();
 
     // Show success message
-    showMessage(`${ordersWithTimestamp.length} orders submitted successfully! 🚀`, "success");
+    showMessage(`${submittedCount} orders submitted successfully! 🚀`, "success");
+    console.log(`✅ Successfully submitted ${submittedCount} orders`);
 
   } catch (err) {
-    console.error("Error submitting orders:", err);
+    console.error("❌ Error submitting orders:", err);
     showMessage("Failed to submit orders ❌", "error");
   }
 }
 
-// Submit orders (moves them to submitted and clears active orders)
-async function submitOrders() {
-  if (orders.length === 0) {
-    alert("No orders to submit.");
-    return;
-  }
-
-  // Confirm submission
-  if (!confirm(`Submit ${orders.length} orders? This will move them to submitted orders and clear your active orders.`)) {
-    return;
-  }
-
-  try {
-    const timestamp = firebase.firestore.Timestamp.now();
-
-    // Add timestamp and mark as submitted
-    const ordersWithTimestamp = orders.map(order => ({
-      ...order,
-      timestamp: timestamp,
-      status: 'Submitted',
-      submittedAt: timestamp
-    }));
-
-    // Get existing data
-    const doc = await db.collection('orders').doc('mountKiwi').get();
-    const existingData = doc.exists ? doc.data() : {};
-    const existingSubmitted = existingData.submittedOrders || [];
-
-    // Add to submitted orders and clear saved orders
-    await db.collection('orders').doc('mountKiwi').set({
-      ...existingData,
-      submittedOrders: [...existingSubmitted, ...ordersWithTimestamp],
-      savedOrders: [] // Clear saved orders
-    });
-
-    // Clear active orders from interface
-    orders = [];
-    renderOrders();
-
-    // Show success message
-    showMessage(`${ordersWithTimestamp.length} orders submitted successfully! 🚀`, "success");
-
-  } catch (err) {
-    console.error("Error submitting orders:", err);
-    showMessage("Failed to submit orders ❌", "error");
-  }
-}
-
-// Utility function to show messages
+// Enhanced utility function to show messages
 function showMessage(message, type) {
+  console.log(`📢 Showing message: ${message} (${type})`);
+  
   // Create message element
   const messageEl = document.createElement('div');
   messageEl.style.cssText = `
@@ -1010,6 +1083,28 @@ function setupNavigationHandlers() {
     });
   });
 }
+
+// Debug function - call this in browser console to check system status
+window.debugOrderSystem = function() {
+  console.log('=== STOCK ORDER TRACKER DEBUG INFO ===');
+  console.log('Orders array:', orders);
+  console.log('Orders count:', orders.length);
+  console.log('Firebase available:', typeof firebase !== 'undefined');
+  console.log('Firestore available:', typeof db !== 'undefined');
+  console.log('Current selection:', currentSelection);
+  console.log('Overlay data:', overlayData);
+  
+  const submitBtn = document.getElementById('submit-btn');
+  console.log('Submit button:', submitBtn);
+  console.log('Submit button disabled:', submitBtn ? submitBtn.disabled : 'not found');
+  
+  const grandTotal = document.getElementById('grand-total');
+  console.log('Grand total element:', grandTotal);
+  console.log('Grand total text:', grandTotal ? grandTotal.textContent : 'not found');
+  
+  // Test Firebase connection
+  testFirebaseConnection();
+};
 
 // Make functions globally available
 window.submitOrders = submitOrders;
