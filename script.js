@@ -140,7 +140,7 @@ function renderVarieties(type) {
       varietyCard.classList.add('multi-color-variety');
     }
     
-    let imageSrc = `icons/${nameToFileName(type.type)}.png`; // Default fallback to type icon
+    let imageSrc = `Icons/${nameToFileName(type.type)}.png`; // Default fallback to type icon
     
     // Set variety image path based on product type
     if (type.type === 'Jackets') {
@@ -156,7 +156,7 @@ function renderVarieties(type) {
     
     varietyCard.innerHTML = `
       <img src="${imageSrc}" alt="${variety.name}" class="variety-image" 
-           onerror="this.src='icons/${nameToFileName(type.type)}.png'" 
+           onerror="this.src='Icons/${nameToFileName(type.type)}.png'" 
            draggable="false">
       <div class="variety-name">${variety.name}</div>
     `;
@@ -326,7 +326,7 @@ function openSizeOverlay(dragData) {
   document.getElementById('overlay-title').textContent = overlayTitle;
   
   // Set product image based on product type
-  let imageSrc = `icons/${nameToFileName(type.type)}.png`; // Default fallback
+  let imageSrc = `Icons/${nameToFileName(type.type)}.png`; // Default fallback
   
   if (type.type === 'Jackets') {
     imageSrc = `Pictures/${variety.name}.png`;
@@ -343,7 +343,7 @@ function openSizeOverlay(dragData) {
   overlayImage.src = imageSrc;
   overlayImage.draggable = false;
   overlayImage.onerror = () => {
-    overlayImage.src = `icons/${nameToFileName(type.type)}.png`;
+    overlayImage.src = `Icons/${nameToFileName(type.type)}.png`;
   };
   
   // Set product details
@@ -660,7 +660,7 @@ function renderOrders() {
     });
     
     // Get image path based on product type
-    let imageSrc = `icons/${nameToFileName(groupedOrder.type)}.png`; // Default fallback
+    let imageSrc = `Icons/${nameToFileName(groupedOrder.type)}.png`; // Default fallback
     
     if (groupedOrder.type === 'Jackets') {
       imageSrc = `Pictures/${groupedOrder.variety}.png`;
@@ -686,7 +686,7 @@ function renderOrders() {
     
     orderItem.innerHTML = `
       <img src="${imageSrc}" alt="${groupedOrder.variety}" class="order-image" 
-           onerror="this.src='icons/${nameToFileName(groupedOrder.type)}.png'" 
+           onerror="this.src='Icons/${nameToFileName(groupedOrder.type)}.png'" 
            draggable="false">
       <div class="order-details">
         <div class="order-product-name">${groupedOrder.type} ${groupedOrder.variety}</div>
