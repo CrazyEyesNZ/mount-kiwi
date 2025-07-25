@@ -144,14 +144,14 @@ function renderVarieties(type) {
     
     // Set variety image path based on product type
     if (type.type === 'Jackets') {
-      imageSrc = `pictures/${variety.name}.png`;
+      imageSrc = `Pictures/${variety.name}.png`;
     } else if (type.type === 'Shawls') {
-      imageSrc = `pictures/Shawl ${variety.name}.png`;
+      imageSrc = `Pictures/Shawl ${variety.name}.png`;
     } else if (type.type === 'House Socks') {
-      imageSrc = `pictures/House Socks - ${variety.name}.png`;
+      imageSrc = `Pictures/House Socks - ${variety.name}.png`;
     } else {
       // For all other product types, use the variety name directly
-      imageSrc = `pictures/${variety.name}.png`;
+      imageSrc = `Pictures/${variety.name}.png`;
     }
     
     varietyCard.innerHTML = `
@@ -329,14 +329,14 @@ function openSizeOverlay(dragData) {
   let imageSrc = `icons/${nameToFileName(type.type)}.png`; // Default fallback
   
   if (type.type === 'Jackets') {
-    imageSrc = `pictures/${variety.name}.png`;
+    imageSrc = `Pictures/${variety.name}.png`;
   } else if (type.type === 'Shawls') {
-    imageSrc = `pictures/Shawl ${variety.name}.png`;
+    imageSrc = `Pictures/Shawl ${variety.name}.png`;
   } else if (type.type === 'House Socks') {
-    imageSrc = `pictures/House Socks - ${variety.name}.png`;
+    imageSrc = `Pictures/House Socks - ${variety.name}.png`;
   } else {
     // For all other product types
-    imageSrc = `pictures/${variety.name}.png`;
+    imageSrc = `Pictures/${variety.name}.png`;
   }
   
   const overlayImage = document.getElementById('overlay-image');
@@ -663,14 +663,14 @@ function renderOrders() {
     let imageSrc = `icons/${nameToFileName(groupedOrder.type)}.png`; // Default fallback
     
     if (groupedOrder.type === 'Jackets') {
-      imageSrc = `pictures/${groupedOrder.variety}.png`;
+      imageSrc = `Pictures/${groupedOrder.variety}.png`;
     } else if (groupedOrder.type === 'Shawls') {
-      imageSrc = `pictures/Shawl ${groupedOrder.variety}.png`;
+      imageSrc = `Pictures/Shawl ${groupedOrder.variety}.png`;
     } else if (groupedOrder.type === 'House Socks') {
-      imageSrc = `pictures/House Socks - ${groupedOrder.variety}.png`;
+      imageSrc = `Pictures/House Socks - ${groupedOrder.variety}.png`;
     } else {
       // For all other product types
-      imageSrc = `pictures/${groupedOrder.variety}.png`;
+      imageSrc = `Pictures/${groupedOrder.variety}.png`;
     }
     
     // Create size/quantity display
