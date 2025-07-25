@@ -24,8 +24,24 @@
 </head>
 <body>
   <header>
-    <img src="Icons/mountkiwi.png" alt="Company Logo" class="logo" onerror="this.style.display='none'">
-    <h1>Stock &amp; Orders Tracker</h1>
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+      <a href="MKOrders.html" class="nav-btn active" data-page="order" data-tooltip="Make an Order">📋</a>
+      <a href="MKView.html" class="nav-btn" data-page="view" data-tooltip="View Orders">👁️</a>
+      <button class="nav-btn disabled" data-page="progress" data-tooltip="Show Progress">📊</button>
+      <button class="nav-btn disabled" data-page="packaging" data-tooltip="Packaging">📦</button>
+      <button class="nav-btn disabled" data-page="shipping" data-tooltip="Shipping">🚚</button>
+      <button class="nav-btn disabled" data-page="analytics" data-tooltip="Analytics">📈</button>
+    </div>
+
+    <!-- Logo and Title (Centered) -->
+    <div class="header-center">
+      <img src="Icons/mountkiwi.png" alt="Company Logo" class="logo" onerror="this.style.display='none'">
+      <h1>Stock &amp; Orders Tracker</h1>
+    </div>
+
+    <!-- Right side space for future elements -->
+    <div class="header-right"></div>
   </header>
 
   <main>
@@ -96,5 +112,30 @@
 
   <script src="products.js"></script>
   <script src="script.js"></script>
+  
+  <script>
+    // Handle disabled button clicks
+    document.querySelectorAll('.nav-btn.disabled').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('This feature is coming soon!');
+      });
+    });
+
+    // Set active state based on current page
+    function setActiveButton() {
+      const currentPage = window.location.pathname.split('/').pop();
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+        const href = btn.getAttribute('href');
+        if (href && href === currentPage) {
+          btn.classList.add('active');
+        }
+      });
+    }
+
+    // Call on page load
+    document.addEventListener('DOMContentLoaded', setActiveButton);
+  </script>
 </body>
 </html>
