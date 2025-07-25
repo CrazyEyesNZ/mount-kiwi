@@ -217,7 +217,7 @@ function renderColors(variety) {
     
     colorCard.innerHTML = `
       <div class="color-sample">
-        <img src="colours/${colourSwatchFileName}" alt="${color}" class="color-swatch-img" 
+        <img src="Colours/${colourSwatchFileName}" alt="${color}" class="color-swatch-img" 
              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" 
              draggable="false">
         <div class="color-fallback" style="display: none;">${color.substring(0, 2)}</div>
@@ -691,7 +691,7 @@ function renderOrders() {
       <div class="order-details">
         <div class="order-product-name">${groupedOrder.type} ${groupedOrder.variety}</div>
         <div class="order-colour">
-          <div class="colour-swatch" style="background-image: url('colours/${colourSwatchFileName}');" 
+          <div class="colour-swatch" style="background-image: url('Colours/${colourSwatchFileName}');" 
                onerror="this.style.backgroundColor='#ccc';"></div>
           <strong>Colour:</strong> ${groupedOrder.colour}
         </div>
