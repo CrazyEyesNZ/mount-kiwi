@@ -11,54 +11,282 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
   <style>
+    /* Enhanced View Page Styling to Match MKOrders */
+    .view-main {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .view-panel {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
     .view-header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f0f0f0;
     }
+
+    .view-header h2 {
+      margin: 0;
+      color: #333;
+      font-size: 1.5rem;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .orders-stats {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      background: rgba(102,126,234,0.1);
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #667eea;
+    }
+
     .orders-table {
       width: 100%;
-      border-collapse: collapse;
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+      border-collapse: separate;
+      border-spacing: 0;
+      background: transparent;
+      border-radius: 0;
+      box-shadow: none;
     }
-    .orders-table th, .orders-table td {
-      padding: 12px 16px;
-      text-align: left;
-      border-bottom: 1px solid #eee;
-      font-size: 0.9rem;
-    }
+
     .orders-table th {
-      background: linear-gradient(45deg, #667eea, #764ba2);
-      color: white;
-      font-weight: 600;
+      background: #f8f9fa;
+      color: #495057;
+      font-weight: 700;
+      padding: 15px 20px;
+      text-align: left;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border-bottom: 2px solid #e9ecef;
     }
+
+    .orders-table th:first-child {
+      border-radius: 8px 0 0 0;
+    }
+
+    .orders-table th:last-child {
+      border-radius: 0 8px 0 0;
+    }
+
+    .orders-table td {
+      padding: 15px 20px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.9rem;
+      vertical-align: middle;
+      background: white;
+    }
+
+    .orders-table tr:hover td {
+      background: rgba(102,126,234,0.05);
+    }
+
     .orders-table tr:last-child td {
       border-bottom: none;
     }
+
+    .orders-table tr:last-child td:first-child {
+      border-radius: 0 0 0 8px;
+    }
+
+    .orders-table tr:last-child td:last-child {
+      border-radius: 0 0 8px 0;
+    }
+
+    .product-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .product-image {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 2px solid #e0e0e0;
+      background: #f8f9fa;
+    }
+
+    .product-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-type {
+      font-weight: 600;
+      color: #333;
+      font-size: 0.9rem;
+    }
+
+    .product-variety {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .color-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .color-swatch {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      border: 2px solid #ddd;
+      background: #f0f0f0;
+      flex-shrink: 0;
+    }
+
     .status-badge {
-      padding: 4px 10px;
-      border-radius: 12px;
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
       font-size: 0.75rem;
       font-weight: 600;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
       color: white;
+      min-width: 70px;
+      text-align: center;
     }
+
     .status-pending {
-      background-color: #ff6b6b;
+      background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+      box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
     }
+
     .status-completed {
-      background-color: #51cf66;
+      background: linear-gradient(45deg, #51cf66, #40c057);
+      box-shadow: 0 2px 8px rgba(81, 207, 102, 0.3);
     }
+
+    .status-processing {
+      background: linear-gradient(45deg, #339af0, #228be6);
+      box-shadow: 0 2px 8px rgba(51, 154, 240, 0.3);
+    }
+
     .priority-high {
       color: #d9480f;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .priority-high::before {
+      content: "🔥";
+      font-size: 0.8rem;
+    }
+
+    .priority-normal {
+      color: #666;
+      font-weight: 500;
+    }
+
+    .quantity-cell {
+      font-weight: 600;
+      color: #667eea;
+      font-size: 1rem;
+    }
+
+    .date-cell {
+      color: #666;
+      font-size: 0.85rem;
+    }
+
+    .type-separator td {
+      border-top: 2px solid #e9ecef !important;
+    }
+
+    .size-badge {
+      background: rgba(102,126,234,0.1);
+      color: #667eea;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+
+    .refresh-btn {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    .refresh-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Loading animation */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      color: #667eea;
       font-weight: 600;
     }
-    .priority-normal {
-      color: #555;
+
+    .loading::before {
+      content: "";
+      width: 20px;
+      height: 20px;
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 
@@ -111,64 +339,208 @@
     <div class="header-right"></div>
   </header>
 
-  <main style="width: 100%; max-width: 1200px; margin: 0 auto;">
-    <div class="view-header">
-      <h2>Active Orders</h2>
+  <main class="view-main">
+    <div class="view-panel">
+      <div class="view-header">
+        <div>
+          <h2>Active Orders</h2>
+          <p style="margin: 5px 0 0 0; font-size: 0.85rem; color: #666; font-style: italic;">
+            Sorted by Product → Colour → Size
+          </p>
+        </div>
+        <div class="orders-stats">
+          <div class="stat-item" id="total-orders">Total: 0</div>
+          <div class="stat-item" id="total-quantity">Items: 0</div>
+          <button class="refresh-btn" onclick="loadOrders()">🔄 Refresh</button>
+        </div>
+      </div>
+      
+      <div id="orders-container">
+        <div class="loading">Loading orders...</div>
+      </div>
     </div>
-    <table class="orders-table" id="orders-table">
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Variety</th>
-          <th>Colour</th>
-          <th>Size</th>
-          <th>Quantity</th>
-          <th>Status</th>
-          <th>Priority</th>
-          <th>Notes</th>
-          <th>Submitted</th>
-        </tr>
-      </thead>
-      <tbody id="orders-body">
-        <!-- Populated by JS -->
-      </tbody>
-    </table>
   </main>
 
   <script>
-    const tbody = document.getElementById('orders-body');
+    let ordersData = [];
 
-    db.collection('orders').doc('mountKiwi').get()
-  .then(doc => {
-    if (doc.exists) {
-      const data = doc.data();
-      const orderArray = data.orders || [];
-
-      orderArray.forEach(order => {
-        const row = document.createElement('tr');
-
-        row.innerHTML = `
-          <td>${order.type}</td>
-          <td>${order.variety}</td>
-          <td>${order.colour}</td>
-          <td>${order.size}</td>
-          <td>${order.quantity}</td>
-          <td><span class="status-badge status-${(order.status || 'pending').toLowerCase()}">${order.status || 'Pending'}</span></td>
-          <td class="priority-${(order.priority || 'normal').toLowerCase()}">${order.priority || 'Normal'}</td>
-          <td>${order.notes || ''}</td>
-          <td>${order.timestamp?.toDate().toLocaleString() || 'No Date'}</td>
-        `;
-
-        tbody.appendChild(row);
-      });
-    } else {
-      console.warn("No such document!");
+    function getProductImage(type, variety) {
+      let imageSrc = `Icons/${type.toLowerCase().replace(/\s+/g, '-')}.png`;
+      
+      if (type === 'Jackets') {
+        imageSrc = `Pictures/${variety}.png`;
+      } else if (type === 'Shawls') {
+        imageSrc = `Pictures/Shawl ${variety}.png`;
+      } else if (type === 'House Socks') {
+        imageSrc = `Pictures/House Socks - ${variety}.png`;
+      } else {
+        imageSrc = `Pictures/${variety}.png`;
+      }
+      
+      return imageSrc;
     }
-  })
-  .catch(err => {
-    console.error('Failed to load orders:', err);
-    tbody.innerHTML = `<tr><td colspan="9" style="color: red;">Failed to load orders.</td></tr>`;
-  });
+
+    function getColorSwatchPath(color) {
+      return `Colours/${color.toLowerCase().replace(/[^a-z0-9]/g, '')}.png`;
+    }
+
+    function formatDate(timestamp) {
+      if (!timestamp) return 'No Date';
+      const date = timestamp.toDate();
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+
+    function sortOrders(orders) {
+      return orders.sort((a, b) => {
+        // First sort by Product Type
+        if (a.type !== b.type) {
+          return a.type.localeCompare(b.type);
+        }
+        
+        // Then by Variety within same type
+        if (a.variety !== b.variety) {
+          return a.variety.localeCompare(b.variety);
+        }
+        
+        // Then by Colour within same variety
+        if (a.colour !== b.colour) {
+          return a.colour.localeCompare(b.colour);
+        }
+        
+        // Finally by Size within same colour
+        const sizeOrder = ['S', 'M', 'L', 'XL', 'XXL', '3XL', 'One', 'S/M', 'L'];
+        const aSizeIndex = sizeOrder.indexOf(a.size);
+        const bSizeIndex = sizeOrder.indexOf(b.size);
+        
+        // If both sizes are in our predefined order, use that
+        if (aSizeIndex !== -1 && bSizeIndex !== -1) {
+          return aSizeIndex - bSizeIndex;
+        }
+        
+        // Handle "One" size (for items like beanies, shawls)
+        if (a.size === 'One' && b.size !== 'One') return 1;
+        if (b.size === 'One' && a.size !== 'One') return -1;
+        
+        // Otherwise, alphabetical sort for sizes
+        return a.size.localeCompare(b.size);
+      });
+    }
+
+    function updateStats() {
+      const totalOrders = ordersData.length;
+      const totalQuantity = ordersData.reduce((sum, order) => sum + (order.quantity || 0), 0);
+      
+      document.getElementById('total-orders').textContent = `Total: ${totalOrders}`;
+      document.getElementById('total-quantity').textContent = `Items: ${totalQuantity}`;
+    }
+
+    function renderOrdersTable() {
+      const container = document.getElementById('orders-container');
+      
+      if (ordersData.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <h3>No Orders Found</h3>
+            <p>No orders have been submitted yet.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const tableHTML = `
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Product ↑</th>
+              <th>Colour ↑</th>
+              <th>Size ↑</th>
+              <th>Quantity</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Notes</th>
+              <th>Submitted</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${ordersData.map((order, index) => {
+              // Add visual separation when product type changes
+              const prevOrder = index > 0 ? ordersData[index - 1] : null;
+              const isNewType = !prevOrder || prevOrder.type !== order.type;
+              const separatorClass = isNewType && index > 0 ? 'type-separator' : '';
+              
+              return `
+              <tr class="${separatorClass}">
+                <td>
+                  <div class="product-cell">
+                    <img src="${getProductImage(order.type, order.variety)}" 
+                         alt="${order.variety}" 
+                         class="product-image"
+                         onerror="this.src='Icons/${order.type.toLowerCase().replace(/\s+/g, '-')}.png'">
+                    <div class="product-info">
+                      <div class="product-type">${order.type}</div>
+                      <div class="product-variety">${order.variety}</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="color-cell">
+                    <div class="color-swatch" style="background-image: url('${getColorSwatchPath(order.colour)}'); background-size: cover; background-position: center;"></div>
+                    <span>${order.colour}</span>
+                  </div>
+                </td>
+                <td><span class="size-badge">${order.size}</span></td>
+                <td><span class="quantity-cell">${order.quantity}</span></td>
+                <td>
+                  <span class="status-badge status-${(order.status || 'pending').toLowerCase()}">
+                    ${order.status || 'Pending'}
+                  </span>
+                </td>
+                <td>
+                  <span class="priority-${(order.priority || 'normal').toLowerCase()}">
+                    ${order.priority || 'Normal'}
+                  </span>
+                </td>
+                <td>${order.notes || '-'}</td>
+                <td><span class="date-cell">${formatDate(order.timestamp)}</span></td>
+              </tr>
+            `}).join('')}
+          </tbody>
+        </table>
+      `;
+      
+      container.innerHTML = tableHTML;
+    }
+
+    function loadOrders() {
+      const container = document.getElementById('orders-container');
+      container.innerHTML = '<div class="loading">Loading orders...</div>';
+      
+      db.collection('orders').doc('mountKiwi').get()
+        .then(doc => {
+          if (doc.exists) {
+            const data = doc.data();
+            ordersData = sortOrders(data.orders || []);
+            updateStats();
+            renderOrdersTable();
+          } else {
+            ordersData = [];
+            updateStats();
+            renderOrdersTable();
+          }
+        })
+        .catch(err => {
+          console.error('Failed to load orders:', err);
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">❌</div>
+              <h3>Failed to Load Orders</h3>
+              <p>Please check your connection and try again.</p>
+              <button class="refresh-btn" onclick="loadOrders()">Try Again</button>
+            </div>
+          `;
+        });
+    }
 
     // Handle disabled button clicks
     document.querySelectorAll('.nav-btn.disabled').forEach(btn => {
@@ -190,8 +562,11 @@
       });
     }
 
-    // Call on page load
-    document.addEventListener('DOMContentLoaded', setActiveButton);
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', () => {
+      setActiveButton();
+      loadOrders();
+    });
   </script>
 </body>
 </html>
