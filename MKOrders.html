@@ -93,7 +93,7 @@
       <div class="orders-header">
         <h2>Active Orders</h2>
         <div class="orders-actions">
-          <button class="orders-btn save-btn" onclick="saveOrders()">💾 Save</button>
+          <button class="orders-btn submit-btn" onclick="submitOrders()" id="submit-btn" disabled>📤 Submit</button>
           <div id="grand-total" class="grand-total">Total: 0</div>
         </div>
       </div>
@@ -124,30 +124,5 @@
 
   <script src="products.js"></script>
   <script src="script.js"></script>
-  
-  <script>
-    // Handle disabled button clicks
-    document.querySelectorAll('.nav-btn.disabled').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        alert('This feature is coming soon!');
-      });
-    });
-
-    // Set active state based on current page
-    function setActiveButton() {
-      const currentPage = window.location.pathname.split('/').pop();
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('active');
-        const href = btn.getAttribute('href');
-        if (href && href === currentPage) {
-          btn.classList.add('active');
-        }
-      });
-    }
-
-    // Call on page load
-    document.addEventListener('DOMContentLoaded', setActiveButton);
-  </script>
 </body>
 </html>
