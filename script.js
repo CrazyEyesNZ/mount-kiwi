@@ -65,7 +65,7 @@ function renderProductTypes() {
     // Explicitly ensure product type cards are not draggable
     typeCard.draggable = false;
     
-    const iconPath = `icons/${nameToFileName(prod.type)}.png`;
+    const iconPath = `Icons/${nameToFileName(prod.type)}.png`;
     typeCard.innerHTML = `
       <img src="${iconPath}" alt="${prod.type}" class="type-icon" onerror="this.style.display='none'" draggable="false">
       <div class="type-name">${prod.type}</div>
