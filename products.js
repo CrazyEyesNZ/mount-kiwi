@@ -13,17 +13,17 @@ window.productData = [
       { name: 'Koru',         colours: ['Brown','Charcoal','Grey'],      sizes: ['S','M','L','XL','XXL','3XL'] },
       { name: 'Nambassa',     colours: ['Base'],                        sizes: ['S','M','L','XL','XXL','3XL'] },
       { name: 'Piha',         colours: ['Base'],                        sizes: ['S','M','L','XL','XXL','3XL'] },
-      { name: 'Punakaiki',    colours: ['Base'],                        sizes: ['S','M','L','XL','XXL','3XL'] },
-      { name: 'Raglan Wave',  colours: ['Base'],                        sizes: ['S','M','L','XL','XXL','3XL'] },
-      { name: 'Riverstone',   colours: ['Base'],                        sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Punakaiki',    colours: ['Berry','Ocean','Green','Grey','New Orange'],                        sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Raglan Wave',  colours: ['Brown','Charcoal','Grey'],                        sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Riverstone',   colours: ['Brown Mix','Charcoal','Cherry','Green','Petrol'],                        sizes: ['S','M','L','XL','XXL','3XL'] },
       { name: 'Sherpa',       colours: ['Base'],                        sizes: ['S','M','L','XL','XXL','3XL'] },
       { name: 'Southern Alps', colours: ['Base'],                       sizes: ['S','M','L','XL','XXL','3XL'] },
       { name: 'Sutherland',   colours: ['Base'],                        sizes: ['S','M','L','XL','XXL','3XL'] },
-      { name: 'Te Anau',      colours: ['Base'],                        sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Te Anau',      colours: ['Charcoal','Oat'],                       sizes: ['S','M','L','XL','XXL','3XL'] },
       { name: 'Tekapo',       colours: ['Base'],                        sizes: ['S','M','L','XL','XXL','3XL'] },
-      { name: 'Waiouru',      colours: ['Base'],                        sizes: ['S','M','L','XL','XXL','3XL'] },
-      { name: 'Whale Bay',    colours: ['Base'],                        sizes: ['S','M','L','XL','XXL','3XL'] },
-      { name: 'Whistler',     colours: ['Base'],                        sizes: ['S','M','L','XL','XXL','3XL'] }
+      { name: 'Waiouru',      colours: ['Charcoal','Grey','(65-10) Blue'],                        sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Whale Bay',    colours: ['Charcoal','Green'],                        sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Whistler',     colours: ['Grey','Oat'],                        sizes: ['S','M','L','XL','XXL','3XL'] }
     ]
   },
   {
@@ -46,31 +46,62 @@ window.productData = [
   {
     type: 'Rain Jacket',
     varieties: [
-      { name: 'Rain Jacket', colours: ['Navy/Grey','Maroon/Grey','Green/Grey','Black','Black/Grey','Aqua'], sizes: ['S','M','L','XL','XXL','3XL'] }
+      { name: 'Aqua', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Black', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Black/Grey', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Green/Grey', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Maroon/Grey', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Navy/Grey', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] }
     ]
   },
   {
     type: 'Woodville Stitch',
     varieties: [
-      { name: 'Woodville Stitch', colours: ['Black','Blue New','Forest Green','Grey'], sizes: ['S','M','L','XL','XXL','3XL'] }
+      { name: 'Black', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Blue New', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Forest Green', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Grey', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] }
     ]
   },
   {
     type: 'Station',
     varieties: [
-      { name: 'Station', colours: ['Brown Mix','Char/Brown','Char/Grey','Charcoal','Dark Nat Brown','Grey','Natural Brown'], sizes: ['S','M','L','XL','XXL','3XL'] }
+      { name: 'Brown Mix', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Char/Brown', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Char/Grey', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Charcoal', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Dark Natural Brown', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Green', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Grey', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Natural Brown', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] }
     ]
   },
   {
     type: 'Coastal',
     varieties: [
-      { name: 'Coastal', colours: ['Black','Brown','Charcoal','Dark Natural','Denim','Forest','Grey','Natural Brown','Olive','Orange'], sizes: ['S','M','L','XL','XXL','3XL'] }
+      { name: 'Black', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Charcoal', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Dark Natural Brown', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Denim', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Forest', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Grey', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Natural Brown', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Olive', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Orange', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] }
     ]
   },
   {
     type: 'Weekender',
     varieties: [
-      { name: 'Weekender', colours: ['50 Shades','Black','Burnt Orange','Charcoal','Cherry','Dark Brown','Forest Green','Natural Brown','Petrol'], sizes: ['S','M','L','XL','XXL','3XL'] }
+      { name: '50 Shades', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Black', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Burnt Orange', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Charcoal', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Cherry', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Dark Brown', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Forest Green', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Natural Brown', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Petrol', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] }
     ]
   },
   {
@@ -79,26 +110,25 @@ window.productData = [
       { name: 'Carnival',     colours: ['Multi'],         sizes: ['S','M','L','XL','XXL','3XL'] },
       { name: 'Lollipop',     colours: ['Mixed'],         sizes: ['S','M','L','XL','XXL','3XL'] },
       { name: 'Wave Rider',   colours: ['Blue','Orange','New Green'], sizes: ['S','M','L','XL','XXL','3XL'] },
-      { name: 'Rainbow',      colours: ['Multi'],         sizes: ['S','M','L','XL','XXL','3XL'] },
-      { name: 'Jungle',       colours: ['Green'],         sizes: ['S','M','L','XL','XXL','3XL'] }
+      { name: 'Woodville Stitch',      colours: ['Blue','Grey','Orange'],         sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Whale Bay',       colours: ['Charcoal'],         sizes: ['S','M','L','XL','XXL','3XL'] }
     ]
   },
   {
     type: 'Vest',
     varieties: [
-      { name: 'Vest', colours: ['Charcoal','Black','Forest','Navy'], sizes: ['S','M','L','XL','XXL','3XL'] }
+      { name: 'Black', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Charcoal', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Forest', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] },
+      { name: 'Navy', colours: ['Base'], sizes: ['S','M','L','XL','XXL','3XL'] }
     ]
   },
   {
-    type: 'Tonga Beanie',
+    type: 'Beanies',
     varieties: [
-      { name: 'Tongariro Beanie', colours: ['Charcoal Grey','Charcoal Black','Charcoal Forest','Charcoal Teal'], sizes: ['One'] }
-    ]
-  },
-  {
-    type: 'Koru Beanie',
-    varieties: [
-      { name: 'Koru Beanie', colours: ['Charcoal'], sizes: ['One'] }
+      { name: 'Tongariro Beanie', colours: ['Charcoal Grey','Charcoal Black','Charcoal Forest','Charcoal Teal'], sizes: ['One Size'] },
+      { name: 'Koru Beanie', colours: ['Charcoal'], sizes: ['One Size'] },
+      { name: 'Sherpa Beanie', colours: ['Navy Mix'], sizes: ['One Size'] }
     ]
   },
   {
@@ -113,10 +143,4 @@ window.productData = [
       { name: 'Wave Rider', colours: ['Base'], sizes: ['S/M','L'] }
     ]
   },
-  {
-    type: 'Sherpa Beanie',
-    varieties: [
-      { name: 'Sherpa Beanie', colours: ['Navy Mix'], sizes: ['One'] }
-    ]
-  }
 ];
