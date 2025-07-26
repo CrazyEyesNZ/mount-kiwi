@@ -6,6 +6,14 @@ function nameToFileName(name) {
     .replace(/^-|-$/g, '');
 }
 
+// NEW: Helper function to build image path with new naming convention
+function buildImagePath(productType, varietyName, colourName) {
+  const formattedType = nameToFileName(productType);
+  const formattedVariety = nameToFileName(varietyName);
+  const formattedColour = nameToFileName(colourName);
+  return `Pictures/${formattedType}-${formattedVariety}-${formattedColour}.png`;
+}
+
 // Utility function to convert colour names to swatch filenames
 function colourToSwatchFileName(colour) {
   return colour.toLowerCase()
@@ -191,7 +199,7 @@ function selectProductType(typeIndex) {
   renderVarieties(selectedType);
 }
 
-// Render varieties for selected type
+// UPDATED: Render varieties for selected type with new image path logic
 function renderVarieties(type) {
   if (!varietiesGrid) {
     console.error('Varieties grid element not found');
@@ -221,23 +229,14 @@ function renderVarieties(type) {
       varietyCard.classList.add('multi-color-variety');
     }
     
-    let imageSrc = `Icons/${nameToFileName(type.type)}.png`; // Default fallback to type icon
-    
-    // Set variety image path based on product type
-    if (type.type === 'Jackets') {
-      imageSrc = `Pictures/${variety.name}.png`;
-    } else if (type.type === 'Shawls') {
-      imageSrc = `Pictures/Shawl ${variety.name}.png`;
-    } else if (type.type === 'House Socks') {
-      imageSrc = `Pictures/House Socks - ${variety.name}.png`;
-    } else {
-      // For all other product types, use the variety name directly
-      imageSrc = `Pictures/${variety.name}.png`;
-    }
+    // UPDATED: Use new naming convention - use first color as default for variety display
+    const defaultColour = variety.colours[0];
+    const imageSrc = buildImagePath(type.type, variety.name, defaultColour);
+    const fallbackIcon = `Icons/${nameToFileName(type.type)}.png`;
     
     varietyCard.innerHTML = `
       <img src="${imageSrc}" alt="${variety.name}" class="variety-image" 
-           onerror="this.src='Icons/${nameToFileName(type.type)}.png'" 
+           onerror="this.src='${fallbackIcon}'" 
            draggable="false">
       <div class="variety-name">${variety.name}</div>
     `;
@@ -380,7 +379,7 @@ function setupDropZone() {
   });
 }
 
-// Open size and quantity selection overlay
+// UPDATED: Open size and quantity selection overlay with new image path logic
 function openSizeOverlay(dragData) {
   const type = productData[dragData.type];
   const variety = type.varieties[dragData.variety];
@@ -406,25 +405,15 @@ function openSizeOverlay(dragData) {
   }
   document.getElementById('overlay-title').textContent = overlayTitle;
   
-  // Set product image based on product type
-  let imageSrc = `Icons/${nameToFileName(type.type)}.png`; // Default fallback
-  
-  if (type.type === 'Jackets') {
-    imageSrc = `Pictures/${variety.name}.png`;
-  } else if (type.type === 'Shawls') {
-    imageSrc = `Pictures/Shawl ${variety.name}.png`;
-  } else if (type.type === 'House Socks') {
-    imageSrc = `Pictures/House Socks - ${variety.name}.png`;
-  } else {
-    // For all other product types
-    imageSrc = `Pictures/${variety.name}.png`;
-  }
+  // UPDATED: Use new naming convention for overlay image
+  const imageSrc = buildImagePath(type.type, variety.name, color);
+  const fallbackIcon = `Icons/${nameToFileName(type.type)}.png`;
   
   const overlayImage = document.getElementById('overlay-image');
   overlayImage.src = imageSrc;
   overlayImage.draggable = false;
   overlayImage.onerror = () => {
-    overlayImage.src = `Icons/${nameToFileName(type.type)}.png`;
+    overlayImage.src = fallbackIcon;
   };
   
   // Set product details
@@ -709,7 +698,7 @@ function updateGrandTotal() {
   console.log(`📊 Grand total updated: ${totalQuantity} items across ${orders.length} orders`);
 }
 
-// Enhanced Render active orders with debug
+// UPDATED: Enhanced Render active orders with new image path logic
 function renderOrders() {
   console.log('🎨 Rendering orders...', orders.length, 'orders');
   
@@ -785,19 +774,9 @@ function renderOrders() {
       editOrder(groupedOrder.type, groupedOrder.variety, groupedOrder.colour);
     });
     
-    // Get image path based on product type
-    let imageSrc = `Icons/${nameToFileName(groupedOrder.type)}.png`; // Default fallback
-    
-    if (groupedOrder.type === 'Jackets') {
-      imageSrc = `Pictures/${groupedOrder.variety}.png`;
-    } else if (groupedOrder.type === 'Shawls') {
-      imageSrc = `Pictures/Shawl ${groupedOrder.variety}.png`;
-    } else if (groupedOrder.type === 'House Socks') {
-      imageSrc = `Pictures/House Socks - ${groupedOrder.variety}.png`;
-    } else {
-      // For all other product types
-      imageSrc = `Pictures/${groupedOrder.variety}.png`;
-    }
+    // UPDATED: Use new naming convention for order images
+    const imageSrc = buildImagePath(groupedOrder.type, groupedOrder.variety, groupedOrder.colour);
+    const fallbackIcon = `Icons/${nameToFileName(groupedOrder.type)}.png`;
     
     // Create size/quantity display
     const sizesDisplay = groupedOrder.sizes
@@ -812,7 +791,7 @@ function renderOrders() {
     
     orderItem.innerHTML = `
       <img src="${imageSrc}" alt="${groupedOrder.variety}" class="order-image" 
-           onerror="this.src='Icons/${nameToFileName(groupedOrder.type)}.png'" 
+           onerror="this.src='${fallbackIcon}'" 
            draggable="false">
       <div class="order-details">
         <div class="order-product-name">${groupedOrder.type} ${groupedOrder.variety}</div>
