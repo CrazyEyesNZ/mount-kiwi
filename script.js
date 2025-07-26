@@ -223,6 +223,9 @@ function renderVarieties(type) {
     
     let imageSrc = `Icons/${nameToFileName(type.type)}.png`; // Default fallback to type icon
     
+    // List of varieties that need color-specific images
+    const colorSpecificVarieties = ['Station', 'Coastal'];
+    
     // Set variety image path based on product type
     if (type.type === 'Jackets') {
       imageSrc = `Pictures/${variety.name}.png`;
@@ -230,6 +233,10 @@ function renderVarieties(type) {
       imageSrc = `Pictures/Shawl ${variety.name}.png`;
     } else if (type.type === 'House Socks') {
       imageSrc = `Pictures/House Socks - ${variety.name}.png`;
+    } else if (colorSpecificVarieties.includes(variety.name)) {
+      // For color-specific varieties, use the first color if available
+      const firstColor = variety.colours && variety.colours.length > 0 ? variety.colours[0] : '';
+      imageSrc = `Pictures/${variety.name}-${firstColor}.png`;
     } else {
       // For all other product types, use the variety name directly
       imageSrc = `Pictures/${variety.name}.png`;
@@ -406,6 +413,9 @@ function openSizeOverlay(dragData) {
   }
   document.getElementById('overlay-title').textContent = overlayTitle;
   
+  // List of varieties that need color-specific images
+  const colorSpecificVarieties = ['Station', 'Coastal'];
+  
   // Set product image based on product type
   let imageSrc = `Icons/${nameToFileName(type.type)}.png`; // Default fallback
   
@@ -415,6 +425,9 @@ function openSizeOverlay(dragData) {
     imageSrc = `Pictures/Shawl ${variety.name}.png`;
   } else if (type.type === 'House Socks') {
     imageSrc = `Pictures/House Socks - ${variety.name}.png`;
+  } else if (colorSpecificVarieties.includes(variety.name)) {
+    // For color-specific varieties, include the color in the filename
+    imageSrc = `Pictures/${variety.name}-${color}.png`;
   } else {
     // For all other product types
     imageSrc = `Pictures/${variety.name}.png`;
@@ -785,6 +798,9 @@ function renderOrders() {
       editOrder(groupedOrder.type, groupedOrder.variety, groupedOrder.colour);
     });
     
+    // List of varieties that need color-specific images
+    const colorSpecificVarieties = ['Station', 'Coastal'];
+    
     // Get image path based on product type
     let imageSrc = `Icons/${nameToFileName(groupedOrder.type)}.png`; // Default fallback
     
@@ -794,6 +810,9 @@ function renderOrders() {
       imageSrc = `Pictures/Shawl ${groupedOrder.variety}.png`;
     } else if (groupedOrder.type === 'House Socks') {
       imageSrc = `Pictures/House Socks - ${groupedOrder.variety}.png`;
+    } else if (colorSpecificVarieties.includes(groupedOrder.variety)) {
+      // For color-specific varieties, include the color in the filename
+      imageSrc = `Pictures/${groupedOrder.variety}-${groupedOrder.colour}.png`;
     } else {
       // For all other product types
       imageSrc = `Pictures/${groupedOrder.variety}.png`;
