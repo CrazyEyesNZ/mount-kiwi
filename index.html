@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mount Kiwi Order System</title>
+
+  <!-- Firebase (compat SDKs) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <!-- Papa Parse for CSV parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div style="display: flex; align-items: center;">
+      <img src="assets/icons/logo.png" alt="Mount Kiwi Logo" style="width: 32px; height: 32px; margin-right: 8px;" 
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+      <!-- Fallback logo with Mount Kiwi colors -->
+      <div style="display: none; width: 32px; height: 32px; background: linear-gradient(135deg, #8b7355, #a0875a); border-radius: 50%; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.9rem; margin-right: 8px;">MK</div>
+      <h1>Mount Kiwi Orders</h1>
+    </div>
+    
+    <!-- Product Navigation Icons -->
+    <nav id="productNavigation" class="product-navigation">
+      <!-- Icons will be populated by JS -->
+    </nav>
+    
+    <div id="statusArea" style="display: flex; align-items: center; gap: 12px;">
+      <!-- Order info will be populated by JS -->
+      <div id="orderInfo" style="font-size: 0.85rem; color: rgba(255,255,255,0.8);">
+        <span id="orderItemCount">0 items</span> • 
+        <span id="orderLineCount">0 lines</span>
+      </div>
+      <span class="status-label status-pending" id="orderStatus">Draft</span>
+    </div>
+  </header>
+
+  <!-- Layout: Product panel + Summary -->
+  <div class="layout">
+    <!-- Left: Products -->
+    <main id="productPanel" class="product-panel">
+      <!-- Loading state -->
+      <div id="loadingState" class="empty-state">
+        <h4>Loading products...</h4>
+        <p>Please wait while we fetch the product catalog</p>
+      </div>
+      <!-- Products will be populated by JS -->
+    </main>
+
+    <!-- Right: Order Summary -->
+    <aside id="summaryPanel" class="summary-panel">
+      <h3>Current Order</h3>
+      <div class="empty-state">
+        <h4>No items added yet</h4>
+        <p>Select products and quantities to build your order</p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Modal for Notes -->
+  <div id="modalOverlay" class="modal-overlay" aria-hidden="true">
+    <div class="modal-box" role="dialog" aria-labelledby="modalTitle" aria-describedby="modalDescription">
+      <h3 id="modalTitle">Edit Product Notes</h3>
+      <p id="modalDescription" style="font-size: 0.9rem; color: #706856; margin-bottom: 12px;">
+        Add special instructions or notes for this product combination
+      </p>
+      <textarea 
+        id="noteText" 
+        placeholder="Enter your notes here... (e.g., 'Rush order', 'Special packaging required', etc.)"
+        rows="4"
+        maxlength="500"
+        aria-label="Product notes"
+      ></textarea>
+      <div style="font-size: 0.75rem; color: #a49080; margin-bottom: 8px;">
+        <span id="noteCharCount">0</span>/500 characters
+      </div>
+      <div class="modal-actions">
+        <button id="cancelNoteBtn" type="button" style="background-color: #706856;">
+          Cancel
+        </button>
+        <button id="saveNoteBtn" type="button">
+          Save Note
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Keyboard Shortcuts Help (hidden by default) -->
+  <div id="shortcutsHelp" style="display: none; position: fixed; bottom: 20px; left: 20px; background: rgba(44, 40, 38, 0.9); color: white; padding: 12px; border-radius: 6px; font-size: 0.8rem; z-index: 100; border: 1px solid #8b7355;">
+    <strong>Keyboard Shortcuts:</strong><br>
+    <kbd style="background: #6b5b47; padding: 2px 4px; border-radius: 3px; font-size: 0.7rem;">Enter</kbd> Move to next row<br>
+    <kbd style="background: #6b5b47; padding: 2px 4px; border-radius: 3px; font-size: 0.7rem;">Esc</kbd> Close modal<br>
+    <kbd style="background: #6b5b47; padding: 2px 4px; border-radius: 3px; font-size: 0.7rem;">?</kbd> Toggle this help
+  </div>
+  
+
+  <!-- Success Message Container -->
+  <div id="successMessages" style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
+    <!-- Success messages will be inserted here -->
+  </div>
+
+  <!-- Script -->
+  <script src="script.js"></script>
+</body>
+</html>
