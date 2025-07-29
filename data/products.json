@@ -1,0 +1,145 @@
+[
+  {
+    "type": "Jackets",
+    "varieties": [
+      { "name": "50 Shades",    "colours": ["Base"],                        "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Alpine",       "colours": ["Brown","Charcoal"],             "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Arrowtown",    "colours": ["Base"],                        "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Byron Bay",    "colours": ["Black","(65-10) Blue","Grey"],   "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Coronet Peak", "colours": ["Blue","Cherry"],                "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Fiordland",    "colours": ["Base"],                        "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Glacier",      "colours": ["Base"],                        "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Koru",         "colours": ["Brown","Charcoal","Grey"],      "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Nambassa",     "colours": ["Base"],                        "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Piha",         "colours": ["Base"],                        "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Punakaiki",    "colours": ["Berry","Ocean","Green","Grey","New Orange"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Raglan Wave",  "colours": ["Brown","Charcoal","Grey"],      "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Riverstone",   "colours": ["Brown Mix","Charcoal","Cherry","Green","Petrol"],   "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Sherpa",       "colours": ["Base"],                        "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Southern Alps","colours": ["Base"],                        "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Sutherland",   "colours": ["Base"],                        "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Te Anau",      "colours": ["Charcoal","Oat"],              "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Tekapo",       "colours": ["Base"],                        "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Waiouru",      "colours": ["Charcoal","Grey","(65-10) Blue"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Whale Bay",    "colours": ["Charcoal","Green"],            "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Whistler",     "colours": ["Grey","Oat"],                  "sizes": ["S","M","L","XL","XXL","3XL"] }
+    ]
+  },
+  {
+    "type": "Shawls",
+    "varieties": [
+      { "name": "Aqua Marine", "colours": ["Base"], "sizes": ["One"] },
+      { "name": "Black",       "colours": ["Base"], "sizes": ["One"] },
+      { "name": "Chai",        "colours": ["Base"], "sizes": ["One"] },
+      { "name": "Charcoal",    "colours": ["Base"], "sizes": ["One"] },
+      { "name": "Cream",       "colours": ["Base"], "sizes": ["One"] },
+      { "name": "Forest",      "colours": ["Base"], "sizes": ["One"] },
+      { "name": "Grey",        "colours": ["Base"], "sizes": ["One"] },
+      { "name": "Navy",        "colours": ["Base"], "sizes": ["One"] },
+      { "name": "Natural",     "colours": ["Base"], "sizes": ["One"] },
+      { "name": "Olive",       "colours": ["Base"], "sizes": ["One"] },
+      { "name": "Plum",        "colours": ["Base"], "sizes": ["One"] },
+      { "name": "Rust",        "colours": ["Base"], "sizes": ["One"] }
+    ]
+  },
+  {
+    "type": "Rain Jacket",
+    "varieties": [
+      { "name": "Aqua",        "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Black",       "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Black/Grey",  "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Green/Grey",  "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Maroon/Grey", "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Navy/Grey",   "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] }
+    ]
+  },
+  {
+    "type": "Woodville Stitch",
+    "varieties": [
+      { "name": "Black",         "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Blue New",      "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Forest Green",  "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Grey",          "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] }
+    ]
+  },
+  {
+    "type": "Station",
+    "varieties": [
+      { "name": "Brown Mix",        "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Char/Brown",       "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Char/Grey",        "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Charcoal",         "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Dark Natural Brown","colours":["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Green",            "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Grey",             "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] },
+      { "name": "Natural Brown",    "colours": ["Base"], "sizes": ["S","M","L","XL","XXL","3XL"] }
+    ]
+  },
+  {
+    "type": "Coastal",
+    "varieties": [
+      { "name": "Black",          "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Charcoal",       "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Dark Natural Brown","colours":["Base"],"sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Denim",          "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Forest",         "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Grey",           "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Natural Brown",  "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Olive",          "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Orange",         "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]}
+    ]
+  },
+  {
+    "type": "Weekender",
+    "varieties": [
+      { "name": "50 Shades",       "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Black",           "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Burnt Orange",    "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Charcoal",        "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Cherry",          "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Dark Brown",      "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Forest Green",    "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Natural Brown",   "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Petrol",          "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]}
+    ]
+  },
+  {
+    "type": "Kids Jacket",
+    "varieties": [
+      { "name": "Carnival",        "colours":["Multi"],        "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Lollipop",        "colours":["Mixed"],        "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Wave Rider",      "colours":["Blue","Orange","New Green"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Woodville Stitch","colours":["Blue","Grey","Orange"],        "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Whale Bay",       "colours":["Charcoal"],     "sizes":["S","M","L","XL","XXL","3XL"]}
+    ]
+  },
+  {
+    "type": "Vest",
+    "varieties": [
+      { "name": "Black",    "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Charcoal", "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Forest",   "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]},
+      { "name": "Navy",     "colours":["Base"], "sizes":["S","M","L","XL","XXL","3XL"]}
+    ]
+  },
+  {
+    "type": "Beanies",
+    "varieties": [
+      { "name": "Tongariro Beanie", "colours":["Charcoal Grey","Charcoal Black","Charcoal Forest","Charcoal Teal"], "sizes":["One Size"]},
+      { "name": "Koru Beanie",      "colours":["Charcoal"], "sizes":["One Size"]},
+      { "name": "Sherpa Beanie",    "colours":["Navy Mix"], "sizes":["One Size"]}
+    ]
+  },
+  {
+    "type": "House Socks",
+    "varieties": [
+      { "name": "Alpine",       "colours":["Base"], "sizes":["S/M","L"]},
+      { "name": "Arrowtown",    "colours":["Base"], "sizes":["S/M","L"]},
+      { "name": "Marshmallow",  "colours":["Base"], "sizes":["S/M","L"]},
+      { "name": "Nature",       "colours":["Base"], "sizes":["S/M","L"]},
+      { "name": "Nordic",       "colours":["Base"], "sizes":["S/M","L"]},
+      { "name": "Rainbow",      "colours":["Base"], "sizes":["S/M","L"]},
+      { "name": "Wave Rider",   "colours":["Base"], "sizes":["S/M","L"]}
+    ]
+  }
+]
