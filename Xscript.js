@@ -239,7 +239,7 @@ function renderVarieties(type) {
       // Shawls use just the color
       const firstColor = variety.colours && variety.colours.length > 0 ? variety.colours[0] : '';
       const cleanColor = colourToPictureFileName(firstColor);
-      imageSrc = `Pictures/Shawl-${cleanColor}.png`;
+      imageSrc = `Pictures/Shawl20%${cleanColor}.png`;
     } else {
       // All other product types use variety-color format
       const firstColor = variety.colours && variety.colours.length > 0 ? variety.colours[0] : '';
