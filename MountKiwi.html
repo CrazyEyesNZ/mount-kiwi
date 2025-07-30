@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Order Tracker</title>
+  <link rel="stylesheet" href="Xstyles.css">
+</head>
+<body>
+  <header>
+    <img src="icons/mountkiwi.png" alt="Company Logo" class="logo" onerror="this.style.display='none'">
+    <h1>Stock &amp; Orders Tracker</h1>
+  </header>
+
+  <main>
+    <!-- Product Types Column -->
+    <section id="product-types" class="panel">
+      <h2>Product Types</h2>
+      <div id="types-grid" class="types-grid"></div>
+    </section>
+
+    <!-- Varieties Column -->
+    <section id="varieties-panel" class="panel">
+      <h3>Varieties</h3>
+      <div id="varieties-section" style="display: none;">
+        <h4 id="selected-type-title">Select a product type</h4>
+        <div id="varieties-grid" class="varieties-grid"></div>
+      </div>
+      <div id="varieties-placeholder" class="placeholder-text">
+        Select a product type to see varieties
+      </div>
+    </section>
+
+    <!-- Colors Column -->
+    <section id="colors-panel" class="panel">
+      <h3>Colors</h3>
+      <div id="colors-section" style="display: none;">
+        <h4 id="selected-variety-title">Select a variety</h4>
+        <div id="colors-grid" class="colors-grid"></div>
+        <p class="drag-hint">Drag to orders →</p>
+      </div>
+      <div id="colors-placeholder" class="placeholder-text">
+        Select a variety to see colors
+      </div>
+    </section>
+
+    <!-- Wide Active Orders Column -->
+    <section id="orders-panel" class="panel drop-zone">
+      <h2>Active Orders</h2>
+      <div class="drop-hint">Drop colors here to create orders</div>
+      <div class="orders-list" id="orders-list"></div>
+    </section>
+  </main>
+
+  <!-- Size & Quantity Overlay -->
+  <div id="size-overlay" class="overlay" style="display: none;">
+    <div class="overlay-content">
+      <div class="overlay-header">
+        <h3 id="overlay-title">Select Size & Quantity</h3>
+        <button class="close-btn" onclick="closeOverlay()">&times;</button>
+      </div>
+      
+      <div class="product-preview">
+        <img id="overlay-image" class="overlay-product-image" alt="Product">
+        <div class="product-info">
+          <div id="overlay-product-details"></div>
+        </div>
+      </div>
+      
+      <div class="sizes-grid" id="sizes-grid"></div>
+      
+      <div class="overlay-actions">
+        <button class="cancel-btn" onclick="closeOverlay()">Cancel</button>
+        <button class="add-order-btn" onclick="addToOrders()">Add to Orders</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="products.js"></script>
+  <script src="Xscript.js"></script>
+</body>
+</html>
