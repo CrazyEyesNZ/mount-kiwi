@@ -314,7 +314,6 @@ function selectProductType(typeIndex) {
   renderVarieties(selectedType);
 }
 
-// Render varieties for selected type
 function renderVarieties(type) {
   if (!varietiesGrid) {
     console.error('Varieties grid element not found');
@@ -344,12 +343,20 @@ function renderVarieties(type) {
       varietyCard.classList.add('multi-color-variety');
     }
     
-    // CHANGED: Use the new getImagePath function instead of manual path construction
+    // Use the getImagePath function
     const imageSrc = getImagePath(type.type, variety.name, variety.colours[0]);
+    
+    // FIXED - Special fallback for beanies to use koru-beanie.png
+    let fallbackIcon;
+    if (type.type === 'Beanies') {
+      fallbackIcon = 'Icons/koru-beanie.png';
+    } else {
+      fallbackIcon = `Icons/${nameToFileName(type.type)}.png`;
+    }
     
     varietyCard.innerHTML = `
       <img src="${imageSrc}" alt="${variety.name}" class="variety-image" 
-           onerror="this.src='Icons/${nameToFileName(type.type)}.png'" 
+           onerror="this.src='${fallbackIcon}'" 
            draggable="false">
       <div class="variety-name">${variety.name}</div>
     `;
