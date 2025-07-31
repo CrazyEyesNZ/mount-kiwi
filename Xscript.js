@@ -92,13 +92,8 @@ function getImagePath(productType, varietyName, colorName = null) {
   }
   
   if (productType === 'Kids Jacket') {
-    // UNCHANGED - keeping original logic
-    if (colorName) {
-      return `Pictures/Kids Jacket-${varietyName}-${cleanColor}.png`;
-    } else {
-      return `Pictures/Kids Jacket-${varietyName}-Multi.png`;
-    }
-  }
+  return `Pictures/${varietyName}.png`;
+}
   
   if (productType === 'Beanies') {
     // UNCHANGED - keeping original logic
