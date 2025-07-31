@@ -522,7 +522,7 @@ function openSizeOverlay(dragData) {
   overlayImage.src = imageSrc;
   overlayImage.draggable = false;
   overlayImage.onerror = () => {
-    overlayImage.src = `Icons/${nameToFileName(type.type)}.png`;
+    overlayImage.src = `Pictures/${nameToFileName(type.type)}.png`;
   };
   
   // Set product details
