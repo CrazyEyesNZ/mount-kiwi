@@ -349,7 +349,7 @@ function renderVarieties(type) {
     
     varietyCard.innerHTML = `
       <img src="${imageSrc}" alt="${variety.name}" class="variety-image" 
-           onerror="this.src='Icons/${nameToFileName(type.type)}.png'" 
+           onerror="this.src='${type.type === 'Beanies' ? 'Icons/koru-beanie.png' : 'Icons/' + nameToFileName(type.type) + '.png'}'"
            draggable="false">
       <div class="variety-name">${variety.name}</div>
     `;
