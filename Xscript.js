@@ -40,12 +40,8 @@ function getImagePath(productType, varietyName, colorName = null) {
   // Handle special cases based on actual file naming patterns from the screenshot
   
   if (productType === 'Jackets') {
-    // UNCHANGED - keeping original jacket logic that was working
-    if (colorName && colorName !== 'Base') {
-      return `Pictures/Jackets-${varietyName}-${cleanColor}.png`;
-    } else {
-      return `Pictures/Jackets-${varietyName}-Base.png`;
-    }
+    // FIXED - jackets are named by variety only, not with "Jackets-" prefix or color suffix
+    return `Pictures/${varietyName}.png`;
   }
   
   if (productType === 'Shawls') {
