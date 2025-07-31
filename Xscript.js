@@ -24,7 +24,7 @@ function cleanColorForFilename(colorName) {
     .replace(/-/g, '');           // Remove hyphens
 }
 
-// Updated function to get the correct image path based on actual file naming conventions
+// Fix the getImagePath function for Shawls
 function getImagePath(productType, varietyName, colorName = null) {
   // Clean the color name for file paths
   const cleanColor = cleanColorForFilename(colorName);
@@ -41,8 +41,14 @@ function getImagePath(productType, varietyName, colorName = null) {
   }
   
   if (productType === 'Shawls') {
-    // Shawls follow pattern: Shawl [variety].png (from screenshot: Shawl Aqua Marine.png, Shawl Black.png, etc.)
-    return `Pictures/Shawl ${varietyName}.png`;
+    // FIXED: Shawls are named by COLOR, not variety name
+    // Pattern: Shawl [Color].png (e.g., Shawl Aqua Marine.png, Shawl Black.png)
+    if (colorName && colorName !== 'Base') {
+      return `Pictures/Shawl ${colorName}.png`;
+    } else {
+      // Fallback to variety name if no color specified
+      return `Pictures/Shawl ${varietyName}.png`;
+    }
   }
   
   if (productType === 'House Socks') {
@@ -130,9 +136,7 @@ function getImagePath(productType, varietyName, colorName = null) {
   
   // Default fallback - try the variety name directly
   return `Pictures/${varietyName}.png`;
-
 }
-
 // Global state
 let currentSelection = {
   type: null,
