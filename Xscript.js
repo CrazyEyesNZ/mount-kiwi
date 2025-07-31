@@ -24,10 +24,23 @@ function cleanColorForFilename(colorName) {
     .replace(/-/g, '');           // Remove hyphens
 }
 
-// Fix the getImagePath function for Shawls
+// Define which varieties actually have images available
+const availableImages = {
+  'Station': ['Green'],
+  'Coastal': ['Denim'],
+  'Shawls': ['Aqua Marine', 'Black', 'Chai', 'Charcoal', 'Cream', 'Forest', 'Grey', 'Natural', 'Navy', 'Olive', 'Plum', 'Rust'],
+  'House Socks': ['Alpine', 'Arrowtown', 'Marshmallow', 'Natural', 'Nordic', 'Rainbow', 'Wave Rider']
+};
+
+// Updated getImagePath function that avoids 404s by checking availability
 function getImagePath(productType, varietyName, colorName = null) {
   // Clean the color name for file paths
   const cleanColor = cleanColorForFilename(colorName);
+  
+  // Helper function to check if image exists
+  const hasImage = (type, variety) => {
+    return availableImages[type] && availableImages[type].includes(variety);
+  };
   
   // Handle special cases based on actual file naming patterns from the screenshot
   
@@ -41,53 +54,57 @@ function getImagePath(productType, varietyName, colorName = null) {
   }
   
   if (productType === 'Shawls') {
-  // For shawls, the varietyName IS the color name
-  return `Pictures/Shawl ${varietyName}.png`;
-}
+    // Check if this shawl variety has an image
+    if (hasImage('Shawls', varietyName)) {
+      return `Pictures/Shawl ${varietyName}.png`;
+    } else {
+      // Return icon path directly to avoid 404
+      return `Icons/${nameToFileName(productType)}.png`;
+    }
+  }
   
   if (productType === 'House Socks') {
-    // House Socks follow pattern: House Socks - [variety].png (from screenshot)
-    return `Pictures/House Socks - ${varietyName}.png`;
+    // Check if this house sock variety has an image
+    if (hasImage('House Socks', varietyName)) {
+      return `Pictures/House Socks - ${varietyName}.png`;
+    } else {
+      return `Icons/${nameToFileName(productType)}.png`;
+    }
   }
   
   if (productType === 'Rain Jacket') {
-    // Rain Jacket appears as Rain Jacket.png in screenshot
     return `Pictures/Rain Jacket.png`;
   }
   
   if (productType === 'Station') {
-    // Station items from screenshot: Station-Green.png
-    if (varietyName === 'Green') {
-      return `Pictures/Station-Green.png`;
+    // Only return actual image path if image exists
+    if (hasImage('Station', varietyName)) {
+      return `Pictures/Station-${varietyName}.png`;
     } else {
-      // For other station varieties, clean up the name
-      const cleanVariety = varietyName.replace(/\s+/g, '').replace(/\//g, '');
-      return `Pictures/Station-${cleanVariety}.png`;
+      // Return icon path directly to avoid 404
+      return `Icons/${nameToFileName(productType)}.png`;
     }
   }
   
   if (productType === 'Coastal') {
-    // Coastal items from screenshot: Coastal-Denim.png
-    if (varietyName === 'Denim') {
-      return `Pictures/Coastal-Denim.png`;
+    // Only return actual image path if image exists
+    if (hasImage('Coastal', varietyName)) {
+      return `Pictures/Coastal-${varietyName}.png`;
     } else {
-      const cleanVariety = varietyName.replace(/\s+/g, '').replace(/\//g, '');
-      return `Pictures/Coastal-${cleanVariety}.png`;
+      // Return icon path directly to avoid 404
+      return `Icons/${nameToFileName(productType)}.png`;
     }
   }
   
   if (productType === 'Weekender') {
-    // Weekender appears as Weekender.png in screenshot
     return `Pictures/Weekender.png`;
   }
   
   if (productType === 'Woodville Stitch') {
-    // Woodville Stitch appears as Woodville Stitch.png in screenshot
     return `Pictures/Woodville Stitch.png`;
   }
   
   if (productType === 'Kids Jacket') {
-    // No specific kids jacket pattern visible in screenshot, maintaining existing logic
     if (colorName) {
       return `Pictures/Kids Jacket-${varietyName}-${cleanColor}.png`;
     } else {
@@ -96,7 +113,6 @@ function getImagePath(productType, varietyName, colorName = null) {
   }
   
   if (productType === 'Beanies') {
-    // Beanies have specific naming patterns from screenshot
     if (varietyName === 'Tongariro Beanie') {
       return `Pictures/Tongariro Beanie.png`;
     } else if (varietyName === 'Koru Beanie') {
@@ -104,17 +120,15 @@ function getImagePath(productType, varietyName, colorName = null) {
     } else if (varietyName === 'Sherpa Beanie') {
       return `Pictures/Sherpa Beanie.png`;
     } else {
-      // For other beanies, try direct name match
       return `Pictures/${varietyName}.png`;
     }
   }
   
   if (productType === 'Vest') {
-    // No specific vest pattern visible, try direct variety name
     return `Pictures/${varietyName}.png`;
   }
   
-  // For standalone items that appear directly in the screenshot
+  // For standalone items
   const standaloneItems = [
     '50 Shades', 'Alpine', 'Arrowtown', 'Byron Bay', 'Carnival', 
     'Coronet Peak', 'Fiordland', 'Glacier', 'Koru', 'Lollipop', 
@@ -123,12 +137,11 @@ function getImagePath(productType, varietyName, colorName = null) {
     'Waiouru', 'Wave Rider', 'White Bay', 'Windjel'
   ];
   
-  // Check if the variety name matches any standalone item
   if (standaloneItems.includes(varietyName)) {
     return `Pictures/${varietyName}.png`;
   }
   
-  // Default fallback - try the variety name directly
+  // Default fallback
   return `Pictures/${varietyName}.png`;
 }
 // Global state
