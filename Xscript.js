@@ -91,9 +91,14 @@ function getImagePath(productType, varietyName, colorName = null) {
     return `Pictures/Woodville Stitch.png`;
   }
   
-  if (productType === 'Kids Jacket') {
-  return `Pictures/${varietyName}.png`;
-}
+   if (productType === 'Kids Jacket') {
+    // UNCHANGED - keeping original logic
+    if (colorName) {
+      return `Pictures/Kids Jacket-${varietyName}-${cleanColor}.png`;
+    } else {
+      return `Pictures/Kids Jacket-${varietyName}-Multi.png`;
+    }
+  }
   
   if (productType === 'Beanies') {
     // UNCHANGED - keeping original logic
