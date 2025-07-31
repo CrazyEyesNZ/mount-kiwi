@@ -902,7 +902,7 @@ function renderOrders() {
     
     orderItem.innerHTML = `
       <img src="${imageSrc}" alt="${groupedOrder.variety}" class="order-image" 
-           onerror="this.src='Icons/${nameToFileName(groupedOrder.type)}.png'" 
+           onerror="this.src='${groupedOrder.type === 'Beanies' ? 'Icons/koru-beanie.png' : 'Icons/' + nameToFileName(groupedOrder.type) + '.png'}'" 
            draggable="false">
       <div class="order-details">
         <div class="order-product-name">${groupedOrder.type} ${groupedOrder.variety}</div>
