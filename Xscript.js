@@ -41,15 +41,9 @@ function getImagePath(productType, varietyName, colorName = null) {
   }
   
   if (productType === 'Shawls') {
-    // FIXED: Shawls are named by COLOR, not variety name
-    // Pattern: Shawl [Color].png (e.g., Shawl Aqua Marine.png, Shawl Black.png)
-    if (colorName && colorName !== 'Base') {
-      return `Pictures/Shawl ${colorName}.png`;
-    } else {
-      // Fallback to variety name if no color specified
-      return `Pictures/Shawl ${varietyName}.png`;
-    }
-  }
+  // For shawls, the varietyName IS the color name
+  return `Pictures/Shawl ${varietyName}.png`;
+}
   
   if (productType === 'House Socks') {
     // House Socks follow pattern: House Socks - [variety].png (from screenshot)
