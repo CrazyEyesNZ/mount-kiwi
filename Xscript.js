@@ -13,9 +13,124 @@ function colourToSwatchFileName(colour) {
     .replace(/\s+/g, '') + '.png';
 }
 
-// Utility function to convert colour names to picture filenames (removes slashes and spaces)
-function colourToPictureFileName(colour) {
-  return colour.replace(/[\/\s]/g, ''); // Remove forward slashes and spaces
+// Helper function to clean color names for file paths
+function cleanColorForFilename(colorName) {
+  if (!colorName || colorName === 'Base') return 'Base';
+  
+  return colorName
+    .replace(/\//g, '')           // Remove slashes (Black/Grey -> BlackGrey)
+    .replace(/\s+/g, '')          // Remove spaces
+    .replace(/[()]/g, '')         // Remove parentheses
+    .replace(/-/g, '');           // Remove hyphens
+}
+
+// Updated function to get the correct image path based on actual file naming conventions
+function getImagePath(productType, varietyName, colorName = null) {
+  // Clean the color name for file paths
+  const cleanColor = cleanColorForFilename(colorName);
+  
+  // Handle special cases based on actual file naming patterns from the screenshot
+  
+  if (productType === 'Jackets') {
+    // Based on screenshot, no specific jacket images visible, but maintaining existing logic
+    if (colorName && colorName !== 'Base') {
+      return `Pictures/Jackets-${varietyName}-${cleanColor}.png`;
+    } else {
+      return `Pictures/Jackets-${varietyName}-Base.png`;
+    }
+  }
+  
+  if (productType === 'Shawls') {
+    // Shawls follow pattern: Shawl [variety].png (from screenshot: Shawl Aqua Marine.png, Shawl Black.png, etc.)
+    return `Pictures/Shawl ${varietyName}.png`;
+  }
+  
+  if (productType === 'House Socks') {
+    // House Socks follow pattern: House Socks - [variety].png (from screenshot)
+    return `Pictures/House Socks - ${varietyName}.png`;
+  }
+  
+  if (productType === 'Rain Jacket') {
+    // Rain Jacket appears as Rain Jacket.png in screenshot
+    return `Pictures/Rain Jacket.png`;
+  }
+  
+  if (productType === 'Station') {
+    // Station items from screenshot: Station-Green.png
+    if (varietyName === 'Green') {
+      return `Pictures/Station-Green.png`;
+    } else {
+      // For other station varieties, clean up the name
+      const cleanVariety = varietyName.replace(/\s+/g, '').replace(/\//g, '');
+      return `Pictures/Station-${cleanVariety}.png`;
+    }
+  }
+  
+  if (productType === 'Coastal') {
+    // Coastal items from screenshot: Coastal-Denim.png
+    if (varietyName === 'Denim') {
+      return `Pictures/Coastal-Denim.png`;
+    } else {
+      const cleanVariety = varietyName.replace(/\s+/g, '').replace(/\//g, '');
+      return `Pictures/Coastal-${cleanVariety}.png`;
+    }
+  }
+  
+  if (productType === 'Weekender') {
+    // Weekender appears as Weekender.png in screenshot
+    return `Pictures/Weekender.png`;
+  }
+  
+  if (productType === 'Woodville Stitch') {
+    // Woodville Stitch appears as Woodville Stitch.png in screenshot
+    return `Pictures/Woodville Stitch.png`;
+  }
+  
+  if (productType === 'Kids Jacket') {
+    // No specific kids jacket pattern visible in screenshot, maintaining existing logic
+    if (colorName) {
+      return `Pictures/Kids Jacket-${varietyName}-${cleanColor}.png`;
+    } else {
+      return `Pictures/Kids Jacket-${varietyName}-Multi.png`;
+    }
+  }
+  
+  if (productType === 'Beanies') {
+    // Beanies have specific naming patterns from screenshot
+    if (varietyName === 'Tongariro Beanie') {
+      return `Pictures/Tongariro Beanie.png`;
+    } else if (varietyName === 'Koru Beanie') {
+      return `Pictures/Koru Beanie.png`;
+    } else if (varietyName === 'Sherpa Beanie') {
+      return `Pictures/Sherpa Beanie.png`;
+    } else {
+      // For other beanies, try direct name match
+      return `Pictures/${varietyName}.png`;
+    }
+  }
+  
+  if (productType === 'Vest') {
+    // No specific vest pattern visible, try direct variety name
+    return `Pictures/${varietyName}.png`;
+  }
+  
+  // For standalone items that appear directly in the screenshot
+  const standaloneItems = [
+    '50 Shades', 'Alpine', 'Arrowtown', 'Byron Bay', 'Carnival', 
+    'Coronet Peak', 'Fiordland', 'Glacier', 'Koru', 'Lollipop', 
+    'Nameless', 'Pika', 'Punakaiki', 'Raglan Wave', 'Riverstone', 
+    'Sherpa', 'Southern Alps', 'Sutherland', 'Te Anau', 'Tekapo', 
+    'Waiouru', 'Wave Rider', 'White Bay', 'Windjel'
+  ];
+  
+  // Check if the variety name matches any standalone item
+  if (standaloneItems.includes(varietyName)) {
+    return `Pictures/${varietyName}.png`;
+  }
+  
+  // Default fallback - try the variety name directly
+  return `Pictures/${varietyName}.png`;
+
 }
 
 // Global state
@@ -226,26 +341,8 @@ function renderVarieties(type) {
       varietyCard.classList.add('multi-color-variety');
     }
     
-    let imageSrc = `Icons/${nameToFileName(type.type)}.png`; // Default fallback to type icon
-    
-    // Set variety image path based on product type
-    if (type.type === 'Jackets') {
-      // Jackets remain unchanged - no color in filename
-      imageSrc = `Pictures/${variety.name}.png`;
-    } else if (type.type === 'House Socks') {
-      // House Socks remain unchanged - no color in filename
-      imageSrc = `Pictures/House Socks - ${variety.name}.png`;
-    } else if (type.type === 'Shawls') {
-      // Shawls use just the color
-      const firstColor = variety.colours && variety.colours.length > 0 ? variety.colours[0] : '';
-      const cleanColor = colourToPictureFileName(firstColor);
-      imageSrc = `Pictures/Shawl ${cleanColor}.png`;
-    } else {
-      // All other product types use variety-color format
-      const firstColor = variety.colours && variety.colours.length > 0 ? variety.colours[0] : '';
-      const cleanColor = colourToPictureFileName(firstColor);
-      imageSrc = `Pictures/${variety.name}-${cleanColor}.png`;
-    }
+    // CHANGED: Use the new getImagePath function instead of manual path construction
+    const imageSrc = getImagePath(type.type, variety.name, variety.colours[0]);
     
     varietyCard.innerHTML = `
       <img src="${imageSrc}" alt="${variety.name}" class="variety-image" 
@@ -418,24 +515,8 @@ function openSizeOverlay(dragData) {
   }
   document.getElementById('overlay-title').textContent = overlayTitle;
   
-  // Set product image based on product type
-  let imageSrc = `Icons/${nameToFileName(type.type)}.png`; // Default fallback
-  
-  if (type.type === 'Jackets') {
-    // Jackets remain unchanged - no color in filename
-    imageSrc = `Pictures/${variety.name}.png`;
-  } else if (type.type === 'House Socks') {
-    // House Socks remain unchanged - no color in filename
-    imageSrc = `Pictures/House Socks - ${variety.name}.png`;
-  } else if (type.type === 'Shawls') {
-    // Shawls use just the color
-    const cleanColor = colourToPictureFileName(color);
-    imageSrc = `Pictures/Shawl-${cleanColor}.png`;
-  } else {
-    // All other product types use variety-color format
-    const cleanColor = colourToPictureFileName(color);
-    imageSrc = `Pictures/${variety.name}-${cleanColor}.png`;
-  }
+  // CHANGED: Use the new getImagePath function for overlay image
+  const imageSrc = getImagePath(type.type, variety.name, color);
   
   const overlayImage = document.getElementById('overlay-image');
   overlayImage.src = imageSrc;
@@ -802,24 +883,8 @@ function renderOrders() {
       editOrder(groupedOrder.type, groupedOrder.variety, groupedOrder.colour);
     });
     
-    // Get image path based on product type
-    let imageSrc = `Icons/${nameToFileName(groupedOrder.type)}.png`; // Default fallback
-    
-    if (groupedOrder.type === 'Jackets') {
-      // Jackets remain unchanged - no color in filename
-      imageSrc = `Pictures/${groupedOrder.variety}.png`;
-    } else if (groupedOrder.type === 'House Socks') {
-      // House Socks remain unchanged - no color in filename
-      imageSrc = `Pictures/House Socks - ${groupedOrder.variety}.png`;
-    } else if (groupedOrder.type === 'Shawls') {
-      // Shawls use just the color
-      const cleanColor = colourToPictureFileName(groupedOrder.colour);
-      imageSrc = `Pictures/Shawl-${cleanColor}.png`;
-    } else {
-      // All other product types use variety-color format
-      const cleanColor = colourToPictureFileName(groupedOrder.colour);
-      imageSrc = `Pictures/${groupedOrder.variety}-${cleanColor}.png`;
-    }
+    // CHANGED: Use the new getImagePath function for order display
+    const imageSrc = getImagePath(groupedOrder.type, groupedOrder.variety, groupedOrder.colour);
     
     // Create size/quantity display
     const sizesDisplay = groupedOrder.sizes
