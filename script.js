@@ -530,7 +530,7 @@ function updateOrderCounts() {
   }
 }
 
-// Render the order summary with consolidated size display
+// Updated renderSummary function with totals
 function renderSummary() {
   const panel = document.getElementById('summaryPanel');
   
@@ -580,8 +580,24 @@ function renderSummary() {
     });
     
     Object.keys(groupedOrder).forEach(type => {
+      // Calculate total for this product type
+      const typeTotal = Object.keys(groupedOrder[type]).reduce((typeSum, productKey) => {
+        const product = groupedOrder[type][productKey];
+        const productTotal = product.sizes.reduce((productSum, size) => productSum + size.quantity, 0);
+        return typeSum + productTotal;
+      }, 0);
+      
       html += `<div style="margin-bottom: 16px;">`;
-      html += `<h4 style="color: #5a4a38; font-size: 0.9rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">${type}</h4>`;
+      
+      // Updated header with total count and visual styling
+      html += `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 6px 12px; background: linear-gradient(135deg, #8b7355, #a0875a); border-radius: 6px; color: white;">
+          <h4 style="color: white; font-size: 0.9rem; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">${type}</h4>
+          <div style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">
+            ${typeTotal} items
+          </div>
+        </div>
+      `;
       
       Object.keys(groupedOrder[type]).forEach(productKey => {
         const product = groupedOrder[type][productKey];
@@ -599,19 +615,39 @@ function renderSummary() {
           `<span class="size">${s.size}</span>(${s.quantity})`
         ).join(', ');
         
+        // Calculate total for this specific product
+        const productTotal = product.sizes.reduce((sum, size) => sum + size.quantity, 0);
+        
         // Only show color if it's not "Base"
         const colorDisplay = product.colour === 'Base' ? '' : ` – ${product.colour}`;
         
         html += `
           <div class="summary-line">
-            <strong>${product.variety}${colorDisplay}:</strong>
-            <div class="sizes">${sizesDisplay}</div>
-            ${product.note ? `<div class="note">${product.note}</div>` : ''}
+            <div style="flex: 1;">
+              <strong>${product.variety}${colorDisplay}:</strong>
+              <div class="sizes">${sizesDisplay}</div>
+              ${product.note ? `<div class="note">${product.note}</div>` : ''}
+            </div>
+            <div style="font-size: 0.8rem; color: #8b7355; font-weight: 600; margin-left: 8px;">
+              ${productTotal}
+            </div>
           </div>
         `;
       });
       html += `</div>`;
     });
+    
+    // Add overall total summary at the bottom
+    if (Object.keys(groupedOrder).length > 1) {
+      html += `
+        <div style="border-top: 2px solid #d4c5b4; padding-top: 12px; margin-top: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; background: #f5f2ee; padding: 8px 12px; border-radius: 6px; font-weight: 600; color: #2c2826;">
+            <span>ORDER TOTAL:</span>
+            <span style="color: #8b7355; font-size: 1.1rem;">${totalItems} items</span>
+          </div>
+        </div>
+      `;
+    }
   }
   
   panel.innerHTML = html;
