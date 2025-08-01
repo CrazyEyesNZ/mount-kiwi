@@ -830,6 +830,125 @@ textarea:focus {
     visibility: visible !important;
     height: auto !important;
   }
+
+  /* Additional styles for order totals - add to your existing CSS */
+
+/* Product type header with totals */
+.product-type-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #8b7355, #a0875a);
+  border-radius: 6px;
+  color: white;
+  box-shadow: 0 2px 4px rgba(139, 115, 85, 0.2);
+}
+
+.product-type-header h4 {
+  color: white;
+  font-size: 0.9rem;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.product-type-total {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Updated summary line to accommodate individual totals */
+.summary-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #faf8f6;
+  border-left: 4px solid #8b7355;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  transition: all 0.2s ease;
+}
+
+.summary-line:hover {
+  background-color: #f5f2ee;
+  transform: translateX(2px);
+}
+
+.summary-line-content {
+  flex: 1;
+}
+
+.summary-line-total {
+  font-size: 0.8rem;
+  color: #8b7355;
+  font-weight: 600;
+  margin-left: 8px;
+  background: rgba(139, 115, 85, 0.1);
+  padding: 2px 6px;
+  border-radius: 8px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Order total summary */
+.order-total-summary {
+  border-top: 2px solid #d4c5b4;
+  padding-top: 12px;
+  margin-top: 12px;
+}
+
+.order-total-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f5f2ee;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #2c2826;
+  border: 1px solid #e8e0d6;
+}
+
+.order-total-value {
+  color: #8b7355;
+  font-size: 1.1rem;
+  background: rgba(139, 115, 85, 0.1);
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+/* Responsive adjustments for totals */
+@media (max-width: 768px) {
+  .product-type-header {
+    padding: 6px 10px;
+  }
+  
+  .product-type-header h4 {
+    font-size: 0.8rem;
+  }
+  
+  .product-type-total {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+  }
+  
+  .summary-line-total {
+    font-size: 0.75rem;
+  }
+  
+  .order-total-value {
+    font-size: 1rem;
+  }
+}
   
   .product-section {
     break-inside: avoid;
