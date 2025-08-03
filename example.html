@@ -116,7 +116,18 @@
       padding: 30px;
       text-align: center;
       margin: 20px 0;
+      border-left: 4px solid #ddd;
     }
+    .order-notification.order-1 { border-left-color: #667eea; }
+    .order-notification.order-2 { border-left-color: #f093fb; }
+    .order-notification.order-3 { border-left-color: #28a745; }
+    .order-notification.order-4 { border-left-color: #ffc107; }
+    .order-notification.order-5 { border-left-color: #dc3545; }
+    .order-notification.order-6 { border-left-color: #17a2b8; }
+    .order-notification.order-7 { border-left-color: #6f42c1; }
+    .order-notification.order-8 { border-left-color: #e83e8c; }
+    .order-notification.order-9 { border-left-color: #20c997; }
+    .order-notification.order-10 { border-left-color: #fd7e14; }
     .order-notification .timestamp {
       font-size: 14px;
       color: #666;
@@ -391,6 +402,7 @@
     .note-mixed-rejects { color: #ffc107; font-weight: bold; }
     .note-standard { color: #333; }
     .note-completion { color: #28a745; font-weight: bold; font-style: italic; }
+    .note-acceptance { color: #667eea; font-weight: bold; font-style: italic; }
     .size-increase { color: #28a745; font-weight: bold; }
     .size-decrease { color: #dc3545; font-weight: bold; }
     .size-same { color: #333; }
@@ -515,6 +527,38 @@
     </div>
   </div>
 
+  <!-- Order Details Modal -->
+  <div class="overlay" id="orderDetailsModal">
+    <div class="overlay-content" style="max-width: 500px;">
+      <div class="overlay-header">
+        <div class="overlay-title">Order Details</div>
+        <button class="close-btn" onclick="closeOrderDetailsModal()">&times;</button>
+      </div>
+      <div style="margin-bottom: 20px;">
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; font-weight: bold; margin-bottom: 5px;">Order Name:</label>
+          <input type="text" id="orderName" placeholder="Enter order name..." style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        <div style="margin-bottom: 15px;">
+          <label style="display: block; font-weight: bold; margin-bottom: 5px;">Shipment Date:</label>
+          <input type="date" id="shipmentDate" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        </div>
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-weight: bold; margin-bottom: 5px;">Shipping Method:</label>
+          <select id="shippingMethod" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            <option value="">Select shipping method...</option>
+            <option value="SEA">SEA</option>
+            <option value="AIR">AIR</option>
+          </select>
+        </div>
+        <div class="validation-message" id="order-validation-message" style="display: none;">
+          Please fill in all required fields
+        </div>
+      </div>
+      <button class="save-btn" onclick="confirmOrderSubmission()" id="confirm-order-btn">Submit Order</button>
+    </div>
+  </div>
+
   <script>
     let orderCounter = 0;
     let pendingOrderId = null;
@@ -524,6 +568,16 @@
     let acceptedOrders = {}; // Store accepted order data permanently
     let updateHistory = {}; // Store Rita's update history
     let originalAdjustValues = {}; // Track original adjustment values when overlay opens
+
+    // Function to format date to New Zealand standard (DD/MM/YYYY)
+    function formatDateToNZ(dateString) {
+      if (!dateString) return '';
+      const date = new Date(dateString + 'T00:00:00'); // Add time to avoid timezone issues
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    }
 
     // Add event listeners to update totals in real-time
     document.addEventListener('DOMContentLoaded', function() {
@@ -590,68 +644,141 @@
         return;
       }
 
-      const orderTimestamp = new Date().toLocaleString();
-      const rita = document.getElementById('rita-products');
-
       if (pendingOrderId) {
         // If there's already a pending order, just return (auto-updating handles changes)
         return;
-      } else {
-        // Create new order
-        orderCounter++;
-        pendingOrderId = 'order-' + orderCounter;
-
-        // Store order data
-        orderData[pendingOrderId] = {
-          order: order,
-          timestamp: orderTimestamp
-        };
-
-        // If this is the first order, clear the waiting message
-        if (orderCounter === 1) {
-          rita.innerHTML = '';
-        }
-
-        // Create new order notification box
-        const orderBox = document.createElement('div');
-        orderBox.className = 'order-notification';
-        orderBox.id = pendingOrderId;
-        orderBox.style.marginBottom = '15px';
-        
-        // Add order-based border color
-        const colorClass = `order-${((orderCounter - 1) % 10) + 1}`;
-        orderBox.classList.add(colorClass);
-        
-        orderBox.innerHTML = `
-          <div class="timestamp">Order #${orderCounter} received: ${orderTimestamp}</div>
-          <button class="accept-btn" onclick="acceptOrder('${pendingOrderId}')" id="acceptBtn-${pendingOrderId}">ACCEPT ORDER</button>
-        `;
-        rita.appendChild(orderBox);
-
-        // Change submit button text and style
-        const submitBtn = document.querySelector('.order-form:first-child .select-btn');
-        submitBtn.textContent = 'AUTO UPDATING';
-        submitBtn.style.opacity = '0.7';
-        submitBtn.style.cursor = 'default';
       }
+
+      // Show order details modal
+      showOrderDetailsModal();
+    }
+
+    function showOrderDetailsModal() {
+      // Clear previous values
+      document.getElementById('orderName').value = '';
+      document.getElementById('shipmentDate').value = '';
+      document.getElementById('shippingMethod').value = '';
+      document.getElementById('order-validation-message').style.display = 'none';
+      
+      // Show modal
+      document.getElementById('orderDetailsModal').style.display = 'flex';
+    }
+
+    function closeOrderDetailsModal() {
+      document.getElementById('orderDetailsModal').style.display = 'none';
+    }
+
+    function confirmOrderSubmission() {
+      const orderName = document.getElementById('orderName').value.trim();
+      const shipmentDate = document.getElementById('shipmentDate').value;
+      const shippingMethod = document.getElementById('shippingMethod').value;
+      
+      // Validate inputs
+      if (!orderName || !shipmentDate || !shippingMethod) {
+        document.getElementById('order-validation-message').style.display = 'block';
+        return;
+      }
+
+      // Hide validation message
+      document.getElementById('order-validation-message').style.display = 'none';
+
+      // Get order data
+      const inputs = document.querySelectorAll('#nikki-products input[type="number"]');
+      const order = {};
+      let count = 0;
+
+      inputs.forEach(input => {
+        const qty = parseInt(input.value, 10) || 0;
+        if (qty > 0) {
+          const name = input.dataset.name;
+          const size = input.dataset.size;
+          if (!order[name]) order[name] = {};
+          order[name][size] = qty;
+          count += qty;
+        }
+      });
+
+      const orderTimestamp = new Date().toLocaleString();
+      const rita = document.getElementById('rita-products');
+
+      // Create new order
+      orderCounter++;
+      pendingOrderId = 'order-' + orderCounter;
+
+      // Store order data with additional details
+      orderData[pendingOrderId] = {
+        order: order,
+        timestamp: orderTimestamp,
+        orderName: orderName,
+        shipmentDate: shipmentDate,
+        shippingMethod: shippingMethod
+      };
+
+      // If this is the first order, clear the waiting message
+      if (orderCounter === 1) {
+        rita.innerHTML = '';
+      }
+
+      // Create new order notification box
+      const orderBox = document.createElement('div');
+      orderBox.className = 'order-notification';
+      orderBox.id = pendingOrderId;
+      orderBox.style.marginBottom = '15px';
+      
+      // Add order-based border color
+      const colorClass = `order-${((orderCounter - 1) % 10) + 1}`;
+      orderBox.classList.add(colorClass);
+      
+      // Format shipment date to NZ format (DD/MM/YYYY)
+      const formattedShipDate = formatDateToNZ(shipmentDate);
+      
+      orderBox.innerHTML = `
+        <div class="timestamp">
+          <div style="font-weight: bold; margin-bottom: 4px;">${orderName}</div>
+          <div style="font-size: 12px; color: #666;">Order #${orderCounter} received: ${orderTimestamp}</div>
+          <div style="font-size: 12px; color: #666;">Ship: ${formattedShipDate} via ${shippingMethod}</div>
+        </div>
+        <button class="accept-btn" onclick="acceptOrder('${pendingOrderId}')" id="acceptBtn-${pendingOrderId}">ACCEPT ORDER</button>
+      `;
+      rita.appendChild(orderBox);
+
+      // Change submit button text and style
+      const submitBtn = document.querySelector('.order-form:first-child .select-btn');
+      submitBtn.textContent = 'AUTO UPDATING';
+      submitBtn.style.opacity = '0.7';
+      submitBtn.style.cursor = 'default';
 
       document.getElementById('nikki-count').textContent = count;
       document.getElementById('nikki-total').textContent = count;
       document.getElementById('rita-count').textContent = count;
+
+      // Close modal
+      closeOrderDetailsModal();
     }
 
     function updatePendingOrder(order, timestamp, count) {
       const pendingBox = document.getElementById(pendingOrderId);
       const timestampDiv = pendingBox.querySelector('.timestamp');
       
+      // Get the stored order details
+      const storedData = orderData[pendingOrderId];
+      
       // Update stored order data with the new order
       orderData[pendingOrderId] = {
         order: order,
-        timestamp: timestamp
+        timestamp: timestamp,
+        orderName: storedData.orderName,
+        shipmentDate: storedData.shipmentDate,
+        shippingMethod: storedData.shippingMethod
       };
       
       // Update timestamp to show it was updated
-      timestampDiv.textContent = `Order #${orderCounter} auto-updated: ${timestamp}`;
+      const formattedShipDate = formatDateToNZ(storedData.shipmentDate);
+      timestampDiv.innerHTML = `
+        <div style="font-weight: bold; margin-bottom: 4px;">${storedData.orderName}</div>
+        <div style="font-size: 12px; color: #666;">Order #${orderCounter} auto-updated: ${timestamp}</div>
+        <div style="font-size: 12px; color: #666;">Ship: ${formattedShipDate} via ${storedData.shippingMethod}</div>
+      `;
       
       console.log('Auto-updated order data:', orderData[pendingOrderId]);
     }
@@ -674,7 +801,15 @@
       
       // Update the timestamp
       const timestampDiv = notificationBox.querySelector('.timestamp');
-      timestampDiv.textContent = timestampDiv.textContent.replace(/updated:|received:/, 'accepted:');
+      const currentTimestamp = new Date().toLocaleString();
+      const storedData2 = orderData[orderId];
+      const formattedShipDate = formatDateToNZ(storedData2.shipmentDate);
+      
+      timestampDiv.innerHTML = `
+        <div style="font-weight: bold; margin-bottom: 4px;">${storedData2.orderName}</div>
+        <div style="font-size: 12px; color: #666;">Order #${orderCounter} accepted: ${currentTimestamp}</div>
+        <div style="font-size: 12px; color: #666;">Ship: ${formattedShipDate} via ${storedData2.shippingMethod}</div>
+      `;
 
       // Add order details to the existing box
       const orderDetails = document.createElement('div');
@@ -745,11 +880,30 @@
 
       // Show acceptance timestamp for Nikki
       document.getElementById('accepted-timestamp').style.display = 'flex';
-      document.getElementById('acceptance-time').textContent = timestampDiv.textContent.split(': ')[1];
+      document.getElementById('acceptance-time').textContent = currentTimestamp;
 
       // Store accepted order data and clean up pending data
       acceptedOrders[orderId] = storedData;
       delete orderData[orderId];
+
+      // Add acceptance update to Rita's Updates
+      const acceptanceTimestamp = new Date().toLocaleString() + ' - Order accepted and ready for processing';
+      const orderNumber = orderId.replace('order-', '');
+      
+      if (!updateHistory[orderId]) {
+        updateHistory[orderId] = [];
+      }
+      
+      // Add single acceptance entry for the whole order
+      updateHistory[orderId].push({
+        timestamp: acceptanceTimestamp,
+        orderNumber: orderNumber,
+        isAcceptance: true, // Special flag for acceptance updates
+        isOrderLevel: true // Flag to indicate this is an order-level update, not product-specific
+      });
+      
+      // Update Nikki's updates section
+      updateNikkiUpdatesDisplay();
     }
 
     function completeOrder(orderId) {
@@ -791,27 +945,13 @@
         updateHistory[orderId] = [];
       }
       
-      // Get all products in the order for the completion update
-      const orderInfo = acceptedOrders[orderId];
-      if (orderInfo) {
-        Object.entries(orderInfo.order).forEach(([productName, sizes]) => {
-          // Get final completion status for this product
-          const finalUpdates = {};
-          Object.entries(sizes).forEach(([size, required]) => {
-            const completed = completionData[orderId] && completionData[orderId][productName] 
-              ? (completionData[orderId][productName][size] || 0) : required;
-            finalUpdates[size] = completed;
-          });
-
-          updateHistory[orderId].push({
-            timestamp: timestamp,
-            product: productName,
-            updates: finalUpdates,
-            orderNumber: orderNumber,
-            isCompletion: true // Special flag for completion updates
-          });
-        });
-      }
+      // Add single completion entry for the whole order
+      updateHistory[orderId].push({
+        timestamp: timestamp,
+        orderNumber: orderNumber,
+        isCompletion: true, // Special flag for completion updates
+        isOrderLevel: true // Flag to indicate this is an order-level update, not product-specific
+      });
       
       // Update Nikki's updates section
       updateNikkiUpdatesDisplay();
@@ -844,7 +984,11 @@
       
       // Update overlay content
       document.getElementById('overlayTitle').textContent = productName;
-      document.getElementById('overlayTimestamp').textContent = `Order time: ${timestamp}`;
+      const formattedShipDate = orderInfo ? formatDateToNZ(orderInfo.shipmentDate) : '';
+      const orderDetails = orderInfo ? 
+        `${orderInfo.orderName} - Order time: ${orderInfo.timestamp} - Ship: ${formattedShipDate} via ${orderInfo.shippingMethod}` : 
+        `Order time: ${timestamp}`;
+      document.getElementById('overlayTimestamp').textContent = orderDetails;
       
       const overlayContent = document.getElementById('overlayContent');
       overlayContent.innerHTML = '';
@@ -1211,6 +1355,13 @@
       }
     });
 
+    // Close order details modal when clicking outside
+    document.getElementById('orderDetailsModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeOrderDetailsModal();
+      }
+    });
+
     function renderUpdatesList(updates, container) {
       container.innerHTML = '';
       
@@ -1224,9 +1375,9 @@
         return timeA - timeB; // Oldest first for tracking
       });
       
-      // Build the tracking data with position indices (exclude completion updates from change tracking)
+      // Build the tracking data with position indices (exclude completion, acceptance, and order-level updates from change tracking)
       const changeTracking = {};
-      chronologicalUpdates.filter(update => !update.isCompletion).forEach((update, chronoIndex) => {
+      chronologicalUpdates.filter(update => !update.isCompletion && !update.isAcceptance && !update.isOrderLevel).forEach((update, chronoIndex) => {
         const key = `${update.orderId}-${update.product}`;
         if (!changeTracking[key]) {
           changeTracking[key] = {};
@@ -1253,9 +1404,48 @@
         const colorClass = `order-${((orderNum - 1) % 10) + 1}`;
         updateEl.classList.add(colorClass);
         
+        // Handle order-level updates (acceptance/completion) differently
+        if (update.isOrderLevel) {
+          // Get order info for header
+          const orderInfo = acceptedOrders[update.orderId];
+          const formattedShipDate = orderInfo ? formatDateToNZ(orderInfo.shipmentDate) : '';
+          const orderHeader = orderInfo ? 
+            `Order #${update.orderNumber} - ${orderInfo.orderName} - ${orderInfo.shippingMethod} - ${formattedShipDate}` :
+            `Order #${update.orderNumber}`;
+          
+          // Determine note class
+          let noteClass = 'note-standard';
+          if (update.isCompletion) {
+            noteClass = 'note-completion';
+          } else if (update.isAcceptance) {
+            noteClass = 'note-acceptance';
+          }
+          
+          // Extract note from timestamp and apply color
+          const timestampParts = update.timestamp.split(' - ');
+          const baseTimestamp = timestampParts[0];
+          const noteText = timestampParts.length > 1 ? timestampParts.slice(1).join(' - ') : '';
+          
+          updateEl.innerHTML = `
+            <div class="update-timestamp">${baseTimestamp}${noteText ? ` - <span class="${noteClass}">${noteText}</span>` : ''}</div>
+            <div class="update-product"><span class="order-number">${orderHeader}</span></div>
+            <div class="update-details">${noteText}</div>
+          `;
+          
+          container.appendChild(updateEl);
+          return; // Skip the rest of the processing for order-level updates
+        }
+        
+        // Rest of the existing logic for product-specific updates...
         // Get the original order data to show required quantities
         const orderInfo = acceptedOrders[update.orderId];
         const productSizes = orderInfo && orderInfo.order[update.product] ? orderInfo.order[update.product] : {};
+        
+        // Format the order header with order details
+        const formattedShipDate = orderInfo ? formatDateToNZ(orderInfo.shipmentDate) : '';
+        const orderHeader = orderInfo ? 
+          `Order #${update.orderNumber} - ${orderInfo.orderName} - ${orderInfo.shippingMethod} - ${formattedShipDate}` :
+          `Order #${update.orderNumber}`;
         
         // Build completed details with same format as Rita's orders
         const key = `${update.orderId}-${update.product}`;
@@ -1275,8 +1465,8 @@
             // Determine if this is an increase, decrease, or same for change indicators
             let changeClass = 'size-same';
             
-            // Don't show change indicators for completion updates
-            if (!update.isCompletion) {
+            // Don't show change indicators for completion, acceptance, or order-level updates
+            if (!update.isCompletion && !update.isAcceptance && !update.isOrderLevel) {
               const updateId = `${update.timestamp}-${update.product}-${size}`;
               
               if (changeTracking[key] && changeTracking[key][size]) {
@@ -1336,6 +1526,8 @@
         // Check if this is a completion update
         if (update.isCompletion) {
           noteClass = 'note-completion';
+        } else if (update.isAcceptance) {
+          noteClass = 'note-acceptance'; // Use specific styling for acceptance
         } else if (update.adjustmentChanges && update.adjustmentChanges.length > 0) {
           if (detailsText) detailsText += '; ';
           
@@ -1380,8 +1572,8 @@
         
         updateEl.innerHTML = `
           <div class="update-timestamp">${baseTimestamp}${noteText ? ` - <span class="${noteClass}">${noteText}</span>` : ''}</div>
-          <div class="update-product"><span class="order-number">Order #${update.orderNumber}</span> - ${update.product}</div>
-          <div class="update-details">${detailsText}</div>
+          <div class="update-product"><span class="order-number">${orderHeader}</span></div>
+          <div class="update-details">${update.product} ${detailsText}</div>
         `;
         
         container.appendChild(updateEl);
