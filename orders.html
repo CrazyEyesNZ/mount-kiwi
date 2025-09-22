@@ -1,0 +1,119 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="favicon.ico">
+  <title>Mount Kiwi Orders</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="orders">
+  <!-- Header -->
+  <header>
+    <div class="header-left">
+      <div class="logo">
+        <img src="assets/icons/logo.png" alt="Mount Kiwi Logo">
+      </div>
+      <h1>Mount Kiwi</h1>
+    </div>
+
+    <!-- Center product nav (populated by navigation.js) -->
+    <nav id="productNavigation" class="product-navigation"></nav>
+
+    <!-- Right site nav -->
+    <nav class="site-nav">
+      <ul>
+        <li>
+          <a href="orders.html" class="orders-nav active">
+            <img src="assets/icons/order.png" alt="Orders" class="site-nav-icon">
+            <span>Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="intake.html" class="intake-nav">
+            <img src="assets/icons/intake.png" alt="Intake" class="site-nav-icon">
+            <span>Intake</span>
+          </a>
+        </li>
+        <li>
+          <a href="progress.html" class="progress-nav">
+            <img src="assets/icons/progress.png" alt="Progress" class="site-nav-icon">
+            <span>Progress</span>
+          </a>
+        </li>
+        <li>
+          <a href="packaging.html" class="packaging-nav">
+            <img src="assets/icons/packaging.png" alt="Packaging" class="site-nav-icon">
+            <span>Packaging</span>
+          </a>
+        </li>
+        <li>
+          <a href="shipping.html" class="shipping-nav">
+            <img src="assets/icons/shipping.png" alt="Shipping" class="site-nav-icon">
+            <span>Shipping</span>
+          </a>
+        </li>
+        <li>
+          <a href="analytics.html" class="analytics-nav">
+            <img src="assets/icons/analytics.png" alt="Analytics" class="site-nav-icon">
+            <span>Analytics</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Status area -->
+  <div id="statusArea">
+    <div id="statusMeta" class="status-meta">
+      <!-- filled by orders-ui.js -->
+    </div>
+    <div class="status-counts">
+      <span id="orderItemCount">0 items</span>
+      <span id="orderLineCount">0 lines</span>
+    </div>
+  </div>
+
+  <!-- Main layout -->
+  <div class="app-container">
+    <!-- Left: product catalog -->
+    <div id="productPanel">
+      <div style="text-align:center; padding:40px; color:#666;">
+        <div style="font-size:3rem; margin-bottom:20px;">📄</div>
+        <h3 style="margin-bottom:12px;">Loading Mount Kiwi Products...</h3>
+        <p style="font-size:0.9rem; opacity:0.8;">Fetching product catalog from database</p>
+      </div>
+    </div>
+
+    <!-- Right: current order -->
+    <div id="currentOrder">
+      <h2>Current Order</h2>
+      <div id="successMessages"></div>
+    </div>
+  </div>
+
+  <!-- Notes modal -->
+  <div id="notesModal" class="modal" style="display:none;">
+    <div>
+      <h2>📝 Add Notes</h2>
+      <p style="margin-bottom:12px; color:#666; font-size:0.9rem;">
+        Add special instructions or notes for this product line
+      </p>
+      <textarea placeholder="Enter special instructions, color preferences, or other notes..."></textarea>
+      <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:16px;">
+        <button id="saveNoteBtn" style="background: var(--accent); color: white;">💾 Save Note</button>
+        <button id="clearNotesBtn" style="background: #dc3545; color: white;">🗑️ Clear All</button>
+        <button id="closeModalBtn" style="background: #6c757d; color: white;">❌ Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap the Orders page and dynamically create the pre-order overlay -->
+  <script type="module" src="./js/main.js"></script>
+  <script type="module">
+    import { initOrdersPage } from './js/orders-ui.js';
+    initOrdersPage();
+  </script>
+</body>
+</html>

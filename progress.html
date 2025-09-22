@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mount Kiwi Progress</title>
+  <!-- Fixed CSS path -->
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Progress-specific styles */
+    .progress-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .progress-section {
+      margin-bottom: 40px;
+    }
+
+    .progress-section h2 {
+      color: var(--primary);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Dashboard Overview Cards */
+    .overview-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .overview-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .overview-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .overview-card.pending { border-top: 4px solid #ffc107; }
+    .overview-card.accepted { border-top: 4px solid #007bff; }
+    .overview-card.completed { border-top: 4px solid #28a745; }
+    .overview-card.shipped { border-top: 4px solid #6f42c1; }
+
+    .card-number {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .card-number.pending { color: #ffc107; }
+    .card-number.accepted { color: #007bff; }
+    .card-number.completed { color: #28a745; }
+    .card-number.shipped { color: #6f42c1; }
+
+    .card-label {
+      font-size: 0.9rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .card-sublabel {
+      font-size: 0.8rem;
+      color: #999;
+    }
+
+    /* Progress Table */
+    .progress-table {
+      width: 100%;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      border-collapse: collapse;
+    }
+
+    .progress-table th {
+      background: var(--secondary);
+      color: white;
+      padding: 16px 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .progress-table td {
+      padding: 16px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .progress-table tr:hover {
+      background: #f8f9fa;
+    }
+
+    .progress-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Progress Bar */
+    .progress-bar-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 20px;
+      background: #e9ecef;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #28a745, #20c997);
+      border-radius: 10px;
+      transition: width 0.3s ease;
+      position: relative;
+    }
+
+    .progress-fill.low { background: linear-gradient(90deg, #dc3545, #fd7e14); }
+    .progress-fill.medium { background: linear-gradient(90deg, #ffc107, #fd7e14); }
+    .progress-fill.high { background: linear-gradient(90deg, #28a745, #20c997); }
+
+    .progress-percent {
+      font-weight: 600;
+      font-size: 0.9rem;
+      min-width: 45px;
+      text-align: right;
+    }
+
+    /* Status Badge */
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge.pending {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+
+    .status-badge.accepted {
+      background: #cce5ff;
+      color: #004085;
+      border: 1px solid #7db3ff;
+    }
+
+    .status-badge.completed {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #7bc97b;
+    }
+
+    .status-badge.shipped {
+      background: #e2e3ff;
+      color: #383d41;
+      border: 1px solid #b8b9ff;
+    }
+
+    /* Order ID styling */
+    .order-id {
+      font-family: monospace;
+      background: #f8f9fa;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      color: #495057;
+    }
+
+    /* Timeline View */
+    .timeline-container {
+      background: white;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .timeline-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px dashed #dee2e6;
+    }
+
+    .timeline-item:last-child {
+      border-bottom: none;
+    }
+
+    .timeline-icon {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .timeline-icon.pending { background: #ffc107; }
+    .timeline-icon.accepted { background: #007bff; }
+    .timeline-icon.completed { background: #28a745; }
+    .timeline-icon.shipped { background: #6f42c1; }
+
+    .timeline-content {
+      flex: 1;
+    }
+
+    .timeline-time {
+      font-size: 0.8rem;
+      color: #666;
+      min-width: 120px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .progress-container {
+        padding: 12px;
+      }
+      
+      .overview-cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      
+      .progress-table {
+        font-size: 0.8rem;
+      }
+      
+      .progress-table th,
+      .progress-table td {
+        padding: 8px 6px;
+      }
+      
+      .card-number {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .overview-cards {
+        grid-template-columns: 1fr;
+      }
+      
+      /* Stack table content vertically on very small screens */
+      .progress-table, .progress-table tbody, .progress-table th, .progress-table td, .progress-table tr {
+        display: block;
+      }
+      
+      .progress-table th {
+        display: none;
+      }
+      
+      .progress-table tr {
+        border: 1px solid #ddd;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        padding: 8px;
+      }
+      
+      .progress-table td {
+        border: none;
+        padding: 4px 0;
+        text-align: left;
+      }
+      
+      .progress-table td:before {
+        content: attr(data-label) ": ";
+        font-weight: bold;
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+  </style>
+</head>
+<body data-page="progress">
+  <!-- Updated header with icons -->
+  <header>
+    <div class="header-left">
+      <div class="logo">
+        <img src="assets/icons/logo.png" alt="Mount Kiwi Logo">
+      </div>
+      <h1>Mount Kiwi</h1>
+    </div>
+    
+    <!-- Site navigation with icons on the right -->
+    <nav class="site-nav">
+  <ul>
+    <li><a href="orders.html" class="orders-nav"><img src="assets/icons/order.png" class="site-nav-icon" alt=""><span>Orders</span></a></li>
+    <li><a href="intake.html" class="intake-nav"><img src="assets/icons/intake.png" class="site-nav-icon" alt=""><span>Intake</span></a></li>
+    <li><a href="progress.html" class="progress-nav active"><img src="assets/icons/progress.png" class="site-nav-icon" alt=""><span>Progress</span></a></li>
+    <li><a href="packaging.html" class="packaging-nav"><img src="assets/icons/packaging.png" class="site-nav-icon" alt=""><span>Packaging</span></a></li>
+    <li><a href="shipping.html" class="shipping-nav"><img src="assets/icons/shipping.png" class="site-nav-icon" alt=""><span>Shipping</span></a></li>
+    <li><a href="analytics.html" class="analytics-nav"><img src="assets/icons/analytics.png" class="site-nav-icon" alt=""><span>Analytics</span></a></li>
+  </ul>
+</nav>
+
+  </header>
+
+  <!-- Main content -->
+  <main class="progress-container">
+    <h1 style="color: var(--primary); margin-bottom: 30px;">📊 Order Progress Dashboard</h1>
+    
+    <!-- Overview Cards -->
+    <div class="overview-cards">
+      <div class="overview-card pending">
+        <div class="card-number pending" id="overview-pending">-</div>
+        <div class="card-label">Pending Orders</div>
+        <div class="card-sublabel">Awaiting acceptance</div>
+      </div>
+      <div class="overview-card accepted">
+        <div class="card-number accepted" id="overview-accepted">-</div>
+        <div class="card-label">In Progress</div>
+        <div class="card-sublabel">Being processed</div>
+      </div>
+      <div class="overview-card completed">
+        <div class="card-number completed" id="overview-completed">-</div>
+        <div class="card-label">Completed</div>
+        <div class="card-sublabel">Ready to ship</div>
+      </div>
+      <div class="overview-card shipped">
+        <div class="card-number shipped" id="overview-shipped">-</div>
+        <div class="card-label">Shipped</div>
+        <div class="card-sublabel">Out for delivery</div>
+      </div>
+    </div>
+
+    <!-- Progress Table Section -->
+    <section class="progress-section">
+      <h2>📋 Detailed Order Progress</h2>
+      <div id="progress-table-container">
+        <div class="empty-state">
+          <p>🔄 Loading order progress data...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Activity Timeline -->
+    <section class="progress-section">
+      <h2>⏰ Recent Activity</h2>
+      <div class="timeline-container">
+        <div id="activity-timeline">
+          <div class="empty-state">
+            <p>🔄 Loading recent activity...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Active page management script -->
+  <script>
+    // Set active nav item for current page
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentPage = window.location.pathname.split('/').pop();
+      const navLinks = document.querySelectorAll('.site-nav a');
+      
+      // Remove active class from all links
+      navLinks.forEach(link => link.classList.remove('active'));
+      
+      // Add active class to current page link
+      const pageMap = {
+        'orders.html': '.orders-nav',
+        'packaging.html': '.packaging-nav', 
+        'progress.html': '.progress-nav',
+        'shipping.html': '.shipping-nav',
+        'analytics.html': '.analytics-nav'
+      };
+      
+      const activeSelector = pageMap[currentPage] || '.progress-nav';
+      const activeLink = document.querySelector(activeSelector);
+      if (activeLink) {
+        activeLink.classList.add('active');
+      }
+    });
+  </script>
+
+  <!-- Main progress functionality -->
+  <script type="module">
+    console.log('🔥 Progress page loading...');
+    
+    try {
+      // Import required modules
+      console.log('📦 Importing modules...');
+      
+      const { fetchAllOrders } = await import('./js/order-model.js');
+      const { formatDateToNZ, formatDateTime } = await import('./js/utils.js');
+      
+      console.log('✅ All modules imported');
+      
+      // Initialize progress dashboard
+      await initProgressPage();
+      
+      async function initProgressPage() {
+        console.log('🏗️ Initializing progress dashboard...');
+        
+        try {
+          // Fetch all orders
+          const allOrders = await fetchAllOrders();
+          console.log(`📊 Loaded ${allOrders.length} total orders`);
+          
+          // Calculate statistics
+          const stats = calculateStats(allOrders);
+          console.log('📈 Statistics calculated:', stats);
+          
+          // Update overview cards
+          updateOverviewCards(stats);
+          
+          // Render progress table
+          renderProgressTable(allOrders);
+          
+          // Render activity timeline
+          renderActivityTimeline(allOrders);
+          
+          console.log('✅ Progress dashboard initialized');
+          
+        } catch (error) {
+          throw new Error(`Failed to load progress data: ${error.message}`);
+        }
+      }
+      
+      function calculateStats(orders) {
+        const stats = {
+          pending: 0,
+          accepted: 0,
+          completed: 0,
+          shipped: 0,
+          totalItems: 0,
+          avgCompletionTime: 0
+        };
+        
+        orders.forEach(order => {
+          switch (order.status) {
+            case 'pending': stats.pending++; break;
+            case 'accepted': stats.accepted++; break;
+            case 'completed': stats.completed++; break;
+            case 'shipped': stats.shipped++; break;
+          }
+          
+          // Calculate total items
+          if (order.items) {
+            if (Array.isArray(order.items)) {
+              // New format: array of items
+              stats.totalItems += order.items.reduce((sum, item) => {
+                return sum + Object.values(item.sizes || {}).reduce((s, qty) => s + (qty || 0), 0);
+              }, 0);
+            } else {
+              // Old format: object with sizes
+              stats.totalItems += Object.values(order.items).reduce((sum, sizes) => {
+                return sum + Object.values(sizes).reduce((s, qty) => s + (qty || 0), 0);
+              }, 0);
+            }
+          }
+        });
+        
+        return stats;
+      }
+      
+      function updateOverviewCards(stats) {
+        document.getElementById('overview-pending').textContent = stats.pending;
+        document.getElementById('overview-accepted').textContent = stats.accepted;
+        document.getElementById('overview-completed').textContent = stats.completed;
+        document.getElementById('overview-shipped').textContent = stats.shipped;
+      }
+      
+      function renderProgressTable(orders) {
+        const container = document.getElementById('progress-table-container');
+        
+        if (orders.length === 0) {
+          container.innerHTML = '<div class="empty-state"><p>📭 No orders found</p></div>';
+          return;
+        }
+        
+        // Sort orders by creation date (newest first)
+        const sortedOrders = [...orders].sort((a, b) => {
+          const dateA = a.timestamps?.created?.toDate?.() || new Date(a.timestamps?.created || 0);
+          const dateB = b.timestamps?.created?.toDate?.() || new Date(b.timestamps?.created || 0);
+          return dateB - dateA;
+        });
+        
+        const table = document.createElement('table');
+        table.className = 'progress-table';
+        
+        table.innerHTML = `
+          <thead>
+            <tr>
+              <th>Order #</th>
+              <th>Customer</th>
+              <th>Ship Date</th>
+              <th>Status</th>
+              <th>Progress</th>
+              <th>Items</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${sortedOrders.map(order => createOrderRow(order)).join('')}
+          </tbody>
+        `;
+        
+        container.innerHTML = '';
+        container.appendChild(table);
+      }
+      
+      function createOrderRow(order) {
+        const progress = calculateOrderProgress(order);
+        const progressClass = progress < 30 ? 'low' : progress < 70 ? 'medium' : 'high';
+        
+        const totalItems = calculateTotalItems(order);
+        const shortId = order.id.slice(-6);
+        
+        return `
+          <tr>
+            <td data-label="Order #">
+              <span class="order-id">#${shortId}</span>
+            </td>
+            <td data-label="Customer">${order.meta?.name || 'Unknown'}</td>
+            <td data-label="Ship Date">${formatDateToNZ(order.meta?.shipDate)}</td>
+            <td data-label="Status">
+              <span class="status-badge ${order.status}">${order.status}</span>
+            </td>
+            <td data-label="Progress">
+              <div class="progress-bar-container">
+                <div class="progress-bar">
+                  <div class="progress-fill ${progressClass}" style="width: ${progress}%;"></div>
+                </div>
+                <span class="progress-percent">${progress}%</span>
+              </div>
+            </td>
+            <td data-label="Items">${totalItems}</td>
+          </tr>
+        `;
+      }
+      
+      function calculateOrderProgress(order) {
+        if (order.status === 'pending') return 0;
+        if (order.status === 'shipped') return 100;
+        if (order.status === 'completed') return 100;
+        if (order.status === 'accepted') {
+          // Calculate based on completed vs total items
+          if (!order.items || !Array.isArray(order.items)) return 25; // Default progress for accepted
+          
+          let totalOrdered = 0;
+          let totalCompleted = 0;
+          
+          order.items.forEach(item => {
+            const ordered = Object.values(item.sizes || {}).reduce((sum, qty) => sum + (qty || 0), 0);
+            const completed = Object.values(item.completed || {}).reduce((sum, qty) => sum + (qty || 0), 0);
+            totalOrdered += ordered;
+            totalCompleted += completed;
+          });
+          
+          return totalOrdered > 0 ? Math.round((totalCompleted / totalOrdered) * 100) : 25;
+        }
+        
+        return 0;
+      }
+      
+      function calculateTotalItems(order) {
+        if (!order.items) return 0;
+        
+        if (Array.isArray(order.items)) {
+          return order.items.reduce((sum, item) => {
+            return sum + Object.values(item.sizes || {}).reduce((s, qty) => s + (qty || 0), 0);
+          }, 0);
+        } else {
+          return Object.values(order.items).reduce((sum, sizes) => {
+            return sum + Object.values(sizes).reduce((s, qty) => s + (qty || 0), 0);
+          }, 0);
+        }
+      }
+      
+      function renderActivityTimeline(orders) {
+        const container = document.getElementById('activity-timeline');
+        
+        // Collect all timestamps from all orders
+        const activities = [];
+        
+        orders.forEach(order => {
+          const timestamps = order.timestamps || {};
+          const orderId = order.id.slice(-6);
+          const orderName = order.meta?.name || 'Unknown Order';
+          
+          if (timestamps.created) {
+            activities.push({
+              time: timestamps.created.toDate?.() || new Date(timestamps.created),
+              type: 'pending',
+              text: `Order #${orderId} (${orderName}) was created`
+            });
+          }
+          
+          if (timestamps.accepted) {
+            activities.push({
+              time: timestamps.accepted.toDate?.() || new Date(timestamps.accepted),
+              type: 'accepted',
+              text: `Order #${orderId} was accepted for processing`
+            });
+          }
+          
+          if (timestamps.completed) {
+            activities.push({
+              time: timestamps.completed.toDate?.() || new Date(timestamps.completed),
+              type: 'completed',
+              text: `Order #${orderId} was completed`
+            });
+          }
+          
+          if (timestamps.shipped) {
+            activities.push({
+              time: timestamps.shipped.toDate?.() || new Date(timestamps.shipped),
+              type: 'shipped',
+              text: `Order #${orderId} was shipped via ${order.meta?.carrier || 'carrier'}`
+            });
+          }
+        });
+        
+        // Sort by time (newest first)
+        activities.sort((a, b) => b.time - a.time);
+        
+        // Take only the most recent 10 activities
+        const recentActivities = activities.slice(0, 10);
+        
+        if (recentActivities.length === 0) {
+          container.innerHTML = '<div class="empty-state"><p>📭 No recent activity</p></div>';
+          return;
+        }
+        
+        container.innerHTML = recentActivities.map(activity => `
+          <div class="timeline-item">
+            <div class="timeline-icon ${activity.type}"></div>
+            <div class="timeline-content">${activity.text}</div>
+            <div class="timeline-time">${formatDateTime(activity.time)}</div>
+          </div>
+        `).join('');
+      }
+      
+    } catch (error) {
+      console.error('❌ Progress page initialization failed:', error);
+      
+      document.querySelector('.progress-container').innerHTML = `
+        <div style="text-align: center; padding: 60px;">
+          <h3 style="color: #dc3545; margin-bottom: 16px;">⚠️ Unable to load progress dashboard</h3>
+          <p style="margin-bottom: 16px; max-width: 500px; margin-left: auto; margin-right: auto;">
+            <strong>Error:</strong> ${error.message}
+          </p>
+          <button onclick="location.reload()" style="
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 4px; 
+            cursor: pointer;
+            font-size: 1rem;
+          ">
+            🔄 Try Again
+          </button>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

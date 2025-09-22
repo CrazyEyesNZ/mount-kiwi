@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mount Kiwi Packaging</title>
+  <!-- Fixed CSS path -->
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Packaging-specific styles */
+    .packaging-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .controls-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .controls-row select {
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Shared box styling (aligns with intake/orders) */
+    .box {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .box .box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #f9fafb;
+      border-bottom: 1px solid var(--border);
+    }
+    .box .box-header h2 {
+      font-size: 1rem;
+      margin: 0;
+      color: var(--primary);
+    }
+    .box-body {
+      padding: 12px 16px;
+      max-height: 65vh;
+      overflow: auto;
+    }
+
+    /* Order row styling */
+    .pkg-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: start;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      background: #fff;
+      border-left: 4px solid #8aaee0; /* will be replaced per-order color */
+    }
+    .pkg-left {
+      display: grid;
+      gap: 6px;
+    }
+    .pkg-title {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin: 0;
+    }
+    .pkg-title .name {
+      font-weight: 800;
+      color: var(--text);
+    }
+    .pkg-title .id {
+      color: #888;
+      font-size: 0.9rem;
+    }
+    .pkg-meta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      color: #555;
+      font-size: 0.9rem;
+    }
+    .pkg-meta .badge {
+      display: inline-block;
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: #fff;
+    }
+    .pkg-notes {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .pkg-actions {
+      display: grid;
+      gap: 8px;
+      justify-items: end;
+    }
+    .pkg-actions .row {
+      display: flex;
+      gap: 8px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .btn-primary { background: var(--accent); }
+    .btn-secondary { background: #6c757d; }
+    .btn-danger { background: #dc3545; }
+    .btn-outline {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    /* Collapsibles */
+    details.pkg-details {
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      background: #fafafa;
+    }
+    details.pkg-details summary {
+      cursor: pointer;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .pkg-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+    .pkg-table th, .pkg-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    .pkg-table th {
+      color: #555;
+      font-weight: 700;
+      background: #f4f6f8;
+    }
+    .inline-note {
+      color: #666;
+      font-size: 0.85rem;
+      font-style: italic;
+    }
+
+    /* Small badge colours for status */
+    .status-badge {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      background: #fff;
+      color: #333;
+    }
+    .status-badge--processing { background: #fff6d6; border-color: #ffe08a; }
+    .status-badge--packed { background: #e6f7ee; border-color: #a8e7c3; }
+    .status-badge--shipped { background: #e6f2ff; border-color: #a7c8ff; }
+    .status-badge--hold { background: #ffe6e6; border-color: #ffc1c1; }
+
+    /* Utility */
+    .muted { color: #777; }
+    .small { font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-left">
+      <div class="logo">
+        <img src="assets/icons/logo.png" alt="Mount Kiwi Logo">
+      </div>
+      <h1>Mount Kiwi</h1>
+    </div>
+
+    <!-- Center product nav (populated by navigation.js) -->
+    <nav id="productNavigation" class="product-navigation"></nav>
+
+    <!-- Right site nav -->
+    <nav class="site-nav">
+      <ul>
+        <li>
+          <a href="orders.html" class="orders-nav">
+            <img src="assets/icons/order.png" class="site-nav-icon" alt="Orders">
+            <span>Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="intake.html" class="intake-nav">
+            <img src="assets/icons/intake.png" class="site-nav-icon" alt="Intake">
+            <span>Intake</span>
+          </a>
+        </li>
+        <li>
+          <a href="progress.html" class="progress-nav">
+            <img src="assets/icons/progress.png" class="site-nav-icon" alt="Progress">
+            <span>Progress</span>
+          </a>
+        </li>
+        <li>
+          <a href="packaging.html" class="packaging-nav active">
+            <img src="assets/icons/packaging.png" class="site-nav-icon" alt="Packaging">
+            <span>Packaging</span>
+          </a>
+        </li>
+        <li>
+          <a href="shipping.html" class="shipping-nav">
+            <img src="assets/icons/shipping.png" class="site-nav-icon" alt="Shipping">
+            <span>Shipping</span>
+          </a>
+        </li>
+        <li>
+          <a href="analytics.html" class="analytics-nav">
+            <img src="assets/icons/analytics.png" class="site-nav-icon" alt="Analytics">
+            <span>Analytics</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main content -->
+  <main class="packaging-container">
+    <h1 style="color: var(--primary); margin-bottom: 30px;">📦 Rita's Packaging Dashboard</h1>
+    
+    <!-- Statistics Summary -->
+    <div id="stats-summary" class="stats-summary">
+      <div class="stat-card">
+        <div class="stat-number" id="stat-pending">-</div>
+        <div class="stat-label">Pending Orders</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="stat-processing">-</div>
+        <div class="stat-label">Processing</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="stat-packed">-</div>
+        <div class="stat-label">Packed</div>
+      </div>
+    </div>
+
+    <div class="controls-row">
+      <label class="size-label">Sort:</label>
+      <select id="sort-packaging">
+        <option value="date">By Date</option>
+        <option value="priority">By Priority</option>
+        <option value="name">By Name</option>
+      </select>
+      <span class="muted small">|</span>
+      <label class="size-label">Filter:</label>
+      <select id="filter-packaging">
+        <option value="all">All</option>
+        <option value="pending">Pending</option>
+        <option value="processing">Processing</option>
+        <option value="packed">Packed</option>
+        <option value="hold">On Hold</option>
+      </select>
+    </div>
+
+    <div class="layout">
+      <!-- Left: Pending / Processing -->
+      <section class="box">
+        <div class="box-header">
+          <h2>To Package</h2>
+          <span class="status-badge status-badge--processing" id="count-to-package">0</span>
+        </div>
+        <div class="box-body" id="list-to-package">
+          <!-- Pending/Processing rows -->
+        </div>
+      </section>
+
+      <!-- Right: Packed -->
+      <section class="box">
+        <div class="box-header">
+          <h2>Packed</h2>
+          <span class="status-badge status-badge--packed" id="count-packed">0</span>
+        </div>
+        <div class="box-body" id="list-packed">
+          <!-- Packed rows -->
+        </div>
+      </section>
+    </div>
+
+    <!-- Template (JS clones this) -->
+    <template id="pkg-row-template">
+      <article class="pkg-row">
+        <div class="pkg-left">
+          <h3 class="pkg-title">
+            <span class="name">Order Name</span>
+            <span class="id">#MK-000</span>
+            <span class="badge">Nikki</span>
+            <span class="badge">AIR</span>
+          </h3>
+          <div class="pkg-meta">
+            <span>Accepted <strong class="accepted-ago">—</strong></span>
+            <span class="muted">|</span>
+            <span>Items: <strong class="item-count">—</strong></span>
+            <span class="muted">|</span>
+            <span>Due: <strong class="due-date">—</strong></span>
+          </div>
+          <div class="pkg-notes inline-note">
+            Notes: <span class="notes-text">—</span>
+          </div>
+          <details class="pkg-details">
+            <summary>See Lines</summary>
+            <table class="pkg-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Variety</th>
+                  <th>Colour</th>
+                  <th>Sizes</th>
+                </tr>
+              </thead>
+              <tbody class="lines-body">
+                <!-- Rows injected by JS -->
+              </tbody>
+            </table>
+          </details>
+        </div>
+
+        <div class="pkg-actions">
+          <div class="row">
+            <button class="btn btn-primary btn-start">Start</button>
+            <button class="btn btn-secondary btn-hold">Hold</button>
+          </div>
+          <div>
+            <button class="btn btn-outline btn-print">Print Pack List</button>
+          </div>
+          <div>
+            <button class="btn btn-danger btn-packed">Mark as Packed</button>
+          </div>
+        </div>
+      </article>
+    </template>
+  </main>
+
+  <script type="module">
+    import { subscribeAcceptedOrders, updatePackagingStatus, markAsPacked } from './js/order-model.js';
+    import { formatDateToNZ, timeSince, buildOrderColourClass } from './js/utils.js';
+
+    // --- Stats Summary ----
+    function updateStatsSummary({ pending, processing, packed }) {
+      document.getElementById('stat-pending').textContent = pending ?? '-';
+      document.getElementById('stat-processing').textContent = processing ?? '-';
+      document.getElementById('stat-packed').textContent = packed ?? '-';
+    }
+
+    // --- Render a single line-row (variety/colour/sizes) ---
+    function createLineRow(line) {
+      const tr = document.createElement('tr');
+      const tdType = document.createElement('td');
+      const tdVar = document.createElement('td');
+      const tdColour = document.createElement('td');
+      const tdSizes = document.createElement('td');
+
+      tdType.textContent = line.type || '-';
+      tdVar.textContent = line.variety || '-';
+      tdColour.textContent = line.colour || '-';
+
+      // Build sizes string like "S:1 M:0 L:2 XL:0"
+      const sizes = line.sizes || {};
+      const order = ['S', 'M', 'L', 'XL', 'XXL'];
+      const parts = [];
+      for (const k of order) {
+        if (sizes[k] != null) parts.push(`${k}:${sizes[k]}`);
+      }
+      tdSizes.textContent = parts.join(' ');
+      tr.append(tdType, tdVar, tdColour, tdSizes);
+      return tr;
+    }
+
+    // --- Fill the details table with all order lines ---
+    function fillLinesTable(tbody, lines = []) {
+      tbody.innerHTML = '';
+      lines.forEach(line => {
+        tbody.appendChild(createLineRow(line));
+      });
+    }
+
+    // --- Create an order row DOM from template ---
+    function buildPkgRow(order) {
+      const tpl = document.getElementById('pkg-row-template');
+      const node = tpl.content.cloneNode(true);
+      const row = node.querySelector('.pkg-row');
+
+      // Color class
+      const colorClass = buildOrderColourClass(order?.id || order?.orderId);
+      row.classList.add(colorClass);
+
+      // Title fields
+      row.querySelector('.name').textContent = order.name || 'Unnamed Order';
+      row.querySelector('.id').textContent = `#${(order?.code || order?.orderId || '—')}`;
+
+      // Meta fields
+      const acceptedAgo = timeSince(order?.acceptedTimestamp || order?.acceptedAt);
+      row.querySelector('.accepted-ago').textContent = acceptedAgo || '—';
+
+      // item-count: calculate total lines or total qty
+      const totalLines = Array.isArray(order?.lines) ? order.lines.length : 0;
+      row.querySelector('.item-count').textContent = String(totalLines);
+
+      // due date
+      row.querySelector('.due-date').textContent = formatDateToNZ(order?.dueDate) || '—';
+
+      // badges for who & method
+      const badges = row.querySelectorAll('.badge');
+      if (badges[0]) badges[0].textContent = order?.submittedBy || 'Nikki';
+      if (badges[1]) badges[1].textContent = order?.method || 'AIR';
+
+      // notes
+      row.querySelector('.notes-text').textContent = order?.notes || '—';
+
+      // details table
+      const tbody = row.querySelector('.lines-body');
+      fillLinesTable(tbody, order?.lines || []);
+
+      // Buttons
+      row.querySelector('.btn-start')?.addEventListener('click', async () => {
+        await updatePackagingStatus(order.id, 'processing');
+      });
+      row.querySelector('.btn-hold')?.addEventListener('click', async () => {
+        await updatePackagingStatus(order.id, 'hold');
+      });
+      row.querySelector('.btn-print')?.addEventListener('click', () => {
+        window.print(); // simple print for now; can switch to a templated print
+      });
+      row.querySelector('.btn-packed')?.addEventListener('click', async () => {
+        await markAsPacked(order.id);
+      });
+
+      return row;
+    }
+
+    // --- Render lists ---
+    function renderPackagingLists(orders = []) {
+      const toPackageEl = document.getElementById('list-to-package');
+      const packedEl = document.getElementById('list-packed');
+      const countToPackage = document.getElementById('count-to-package');
+      const countPacked = document.getElementById('count-packed');
+
+      toPackageEl.innerHTML = '';
+      packedEl.innerHTML = '';
+
+      const pendingOrProcessing = [];
+      const packed = [];
+
+      (orders || []).forEach(o => {
+        const st = (o?.packagingStatus || 'pending').toLowerCase();
+        if (st === 'packed') packed.push(o);
+        else pendingOrProcessing.push(o);
+      });
+
+      countToPackage.textContent = String(pendingOrProcessing.length);
+      countPacked.textContent = String(packed.length);
+
+      pendingOrProcessing.forEach(o => toPackageEl.appendChild(buildPkgRow(o)));
+      packed.forEach(o => packedEl.appendChild(buildPkgRow(o)));
+    }
+
+    // --- Sort & Filter (client-side) ---
+    const sortSel = document.getElementById('sort-packaging');
+    const filterSel = document.getElementById('filter-packaging');
+    let currentData = [];
+
+    function applySortFilter() {
+      let data = [...currentData];
+
+      // Filter
+      const f = (filterSel.value || 'all').toLowerCase();
+      if (f !== 'all') {
+        data = data.filter(o => (o?.packagingStatus || 'pending').toLowerCase() === f);
+      }
+
+      // Sort
+      const s = (sortSel.value || 'date').toLowerCase();
+      if (s === 'date') {
+        data.sort((a, b) => (a?.acceptedTimestamp || 0) - (b?.acceptedTimestamp || 0));
+      } else if (s === 'priority') {
+        data.sort((a, b) => (b?.priority || 0) - (a?.priority || 0));
+      } else if (s === 'name') {
+        data.sort((a, b) => (a?.name || '').localeCompare(b?.name || ''));
+      }
+
+      renderPackagingLists(data);
+    }
+
+    sortSel.addEventListener('change', applySortFilter);
+    filterSel.addEventListener('change', applySortFilter);
+
+    // --- Live subscription to ACCEPTED orders (intake -> packaging) ---
+    let unsubscribe = null;
+    function wireLiveData() {
+      if (unsubscribe) unsubscribe();
+
+      unsubscribe = subscribeAcceptedOrders((list = []) => {
+        // Update stats summary
+        const stats = {
+          pending: list.filter(o => (o?.packagingStatus || 'pending') === 'pending').length,
+          processing: list.filter(o => (o?.packagingStatus || 'pending') === 'processing').length,
+          packed: list.filter(o => (o?.packagingStatus || 'pending') === 'packed').length,
+        };
+        updateStatsSummary(stats);
+
+        currentData = list;
+        applySortFilter();
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      wireLiveData();
+    });
+  </script>
+</body>
+</html>

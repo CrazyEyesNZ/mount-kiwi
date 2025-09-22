@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>Mount Kiwi Order System</title>
+</head>
+<body data-page="home">
+  <header>
+  <div class="header-left">
+    <div class="logo">
+      <img src="assets/icons/logo.png" alt="Mount Kiwi Logo">
+    </div>
+    <h1>Mount Kiwi</h1>
+  </div>
+  <nav id="productNavigation" class="product-navigation"></nav>
+</header>
+
+  <div id="statusArea">
+    <span>0 items</span>
+    <span>0 lines</span>
+  </div>
+
+  <div class="app-container">
+    <div id="productPanel"></div>
+
+    <div id="currentOrder">
+      <h2>Current Order</h2>
+      <div id="successMessages"></div>
+      <!-- Order content will be dynamically generated -->
+    </div>
+  </div>
+
+  <!-- Notes Modal -->
+  <div id="notesModal" class="modal" style="display:none;">
+    <div>
+      <h2>Notes</h2>
+      <textarea placeholder="Enter note..."></textarea>
+      <div>
+        <button id="saveNoteBtn">Save</button>
+        <button id="clearNotesBtn">Clear All</button>
+        <button id="closeModalBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript modules -->
+  <script type="module" src="js/main.js"></script>
+
+</body>
+</html>

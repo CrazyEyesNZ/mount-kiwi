@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mount Kiwi Analytics</title>
+  <!-- Fixed CSS path -->
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Analytics-specific styles */
+    .analytics-container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .analytics-section {
+      margin-bottom: 40px;
+    }
+
+    .analytics-section h2 {
+      color: var(--primary);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .section-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .time-filter {
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: white;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .time-filter.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    /* Key Metrics Cards */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .metric-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--accent);
+    }
+
+    .metric-card.revenue::before { background: #28a745; }
+    .metric-card.orders::before { background: #007bff; }
+    .metric-card.items::before { background: #6f42c1; }
+    .metric-card.time::before { background: #fd7e14; }
+
+    .metric-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .metric-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+    }
+
+    .metric-icon.revenue { background: #28a745; }
+    .metric-icon.orders { background: #007bff; }
+    .metric-icon.items { background: #6f42c1; }
+    .metric-icon.time { background: #fd7e14; }
+
+    .metric-trend {
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .metric-trend.up {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .metric-trend.down {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .metric-value {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .metric-label {
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    .metric-detail {
+      font-size: 0.9rem;
+      color: #888;
+    }
+
+    /* Chart Containers */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .chart-container {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .chart-container h3 {
+      color: var(--primary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chart-placeholder {
+      height: 300px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6c757d;
+      font-style: italic;
+      border: 2px dashed #dee2e6;
+    }
+
+    /* Mock Chart Styles */
+    .mock-line-chart {
+      height: 300px;
+      background: white;
+      position: relative;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .chart-line {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 3;
+    }
+
+    .chart-area {
+      fill: url(#gradient);
+      opacity: 0.3;
+    }
+
+    .chart-dot {
+      fill: var(--accent);
+      r: 4;
+    }
+
+    .chart-axis {
+      stroke: #dee2e6;
+      stroke-width: 1;
+    }
+
+    .chart-label {
+      font-size: 12px;
+      fill: #6c757d;
+    }
+
+    /* Performance Table */
+    .performance-table {
+      width: 100%;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      border-collapse: collapse;
+    }
+
+    .performance-table th {
+      background: var(--secondary);
+      color: white;
+      padding: 16px 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .performance-table td {
+      padding: 16px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .performance-table tr:hover {
+      background: #f8f9fa;
+    }
+
+    .performance-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Status Distribution */
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .status-item {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .status-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+    }
+
+    .status-circle.pending { background: #ffc107; }
+    .status-circle.accepted { background: #007bff; }
+    .status-circle.completed { background: #28a745; }
+    .status-circle.shipped { background: #6f42c1; }
+
+    .status-label {
+      font-size: 0.9rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Export Controls */
+    .export-controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .export-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background-color 0.2s;
+    }
+
+    .export-btn:hover {
+      background: var(--primary);
+    }
+
+    /* Insights Panel */
+    .insights-panel {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 40px;
+    }
+
+    .insights-panel h3 {
+      margin-bottom: 16px;
+      color: white;
+    }
+
+    .insight-item {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    .insight-item:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .chart-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .analytics-container {
+        padding: 12px;
+      }
+      
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      
+      .metric-card {
+        padding: 16px;
+      }
+      
+      .metric-value {
+        font-size: 2rem;
+      }
+      
+      .chart-container {
+        padding: 16px;
+      }
+      
+      .analytics-section h2 {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .export-controls {
+        flex-direction: column;
+      }
+      
+      .export-btn {
+        justify-content: center;
+      }
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+  </style>
+</head>
+<body data-page="analytics">
+  <!-- Updated header with icons -->
+  <header>
+    <div class="header-left">
+      <div class="logo">
+        <img src="assets/icons/logo.png" alt="Mount Kiwi Logo">
+      </div>
+      <h1>Mount Kiwi</h1>
+    </div>
+    
+    <!-- Site navigation with icons on the right -->
+    <nav class="site-nav">
+  <ul>
+    <li><a href="orders.html" class="orders-nav"><img src="assets/icons/order.png" class="site-nav-icon" alt=""><span>Orders</span></a></li>
+    <li><a href="intake.html" class="intake-nav"><img src="assets/icons/intake.png" class="site-nav-icon" alt=""><span>Intake</span></a></li>
+    <li><a href="progress.html" class="progress-nav"><img src="assets/icons/progress.png" class="site-nav-icon" alt=""><span>Progress</span></a></li>
+    <li><a href="packaging.html" class="packaging-nav"><img src="assets/icons/packaging.png" class="site-nav-icon" alt=""><span>Packaging</span></a></li>
+    <li><a href="shipping.html" class="shipping-nav"><img src="assets/icons/shipping.png" class="site-nav-icon" alt=""><span>Shipping</span></a></li>
+    <li><a href="analytics.html" class="analytics-nav active"><img src="assets/icons/analytics.png" class="site-nav-icon" alt=""><span>Analytics</span></a></li>
+  </ul>
+</nav>
+
+  </header>
+
+  <!-- Main content -->
+  <main class="analytics-container">
+    <h1 style="color: var(--primary); margin-bottom: 30px;">📊 Business Analytics Dashboard</h1>
+    
+    <!-- AI-Powered Insights Panel -->
+    <div class="insights-panel">
+      <h3>🧠 Smart Insights</h3>
+      <div id="insights-content">
+        <div class="insight-item">
+          <strong>📈 Peak Performance:</strong> Tuesday is your busiest order day with 40% more volume than average.
+        </div>
+        <div class="insight-item">
+          <strong>⚡ Processing Speed:</strong> Rita's packaging time has improved 25% this month - excellent work!
+        </div>
+        <div class="insight-item">
+          <strong>🎯 Best Sellers:</strong> Koru Beanies in Charcoal are your top performer, representing 35% of orders.
+        </div>
+        <div class="insight-item">
+          <strong>🚚 Shipping Trend:</strong> DHL Express usage increased 60% - customers prefer faster delivery.
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <section class="analytics-section">
+      <h2>
+        📊 Key Performance Metrics
+        <div class="section-controls">
+          <button class="time-filter active" data-period="7d">7 Days</button>
+          <button class="time-filter" data-period="30d">30 Days</button>
+          <button class="time-filter" data-period="90d">90 Days</button>
+        </div>
+      </h2>
+      
+      <div class="metrics-grid">
+        <div class="metric-card revenue">
+          <div class="metric-header">
+            <div class="metric-icon revenue">💰</div>
+            <div class="metric-trend up">+12.5%</div>
+          </div>
+          <div class="metric-value" id="revenue-value">$24,750</div>
+          <div class="metric-label">Total Revenue</div>
+          <div class="metric-detail">Average order value: $285</div>
+        </div>
+        
+        <div class="metric-card orders">
+          <div class="metric-header">
+            <div class="metric-icon orders">📋</div>
+            <div class="metric-trend up">+8.3%</div>
+          </div>
+          <div class="metric-value" id="orders-value">87</div>
+          <div class="metric-label">Total Orders</div>
+          <div class="metric-detail">12.4 orders per day average</div>
+        </div>
+        
+        <div class="metric-card items">
+          <div class="metric-header">
+            <div class="metric-icon items">📦</div>
+            <div class="metric-trend up">+15.2%</div>
+          </div>
+          <div class="metric-value" id="items-value">432</div>
+          <div class="metric-label">Items Shipped</div>
+          <div class="metric-detail">5.0 items per order average</div>
+        </div>
+        
+        <div class="metric-card time">
+          <div class="metric-header">
+            <div class="metric-icon time">⏱️</div>
+            <div class="metric-trend down">-18.7%</div>
+          </div>
+          <div class="metric-value" id="time-value">18.2</div>
+          <div class="metric-label">Avg Processing Hours</div>
+          <div class="metric-detail">3.2 hours faster than last month</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Charts Section -->
+    <section class="analytics-section">
+      <h2>📈 Order Trends & Performance</h2>
+      
+      <div class="chart-grid">
+        <!-- Order Volume Chart -->
+        <div class="chart-container">
+          <h3>📊 Daily Order Volume</h3>
+          <div class="mock-line-chart">
+            <svg class="chart-svg" viewBox="0 0 400 300">
+              <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style="stop-color:#8b7355;stop-opacity:0.3" />
+                  <stop offset="100%" style="stop-color:#8b7355;stop-opacity:0" />
+                </linearGradient>
+              </defs>
+              
+              <!-- Grid lines -->
+              <g class="chart-grid-lines">
+                <line x1="50" y1="50" x2="350" y2="50" class="chart-axis" />
+                <line x1="50" y1="100" x2="350" y2="100" class="chart-axis" />
+                <line x1="50" y1="150" x2="350" y2="150" class="chart-axis" />
+                <line x1="50" y1="200" x2="350" y2="200" class="chart-axis" />
+                <line x1="50" y1="250" x2="350" y2="250" class="chart-axis" />
+              </g>
+              
+              <!-- Sample data line -->
+              <path d="M 50 200 L 100 180 L 150 150 L 200 120 L 250 140 L 300 100 L 350 110" 
+                    class="chart-line" />
+              
+              <!-- Area under curve -->
+              <path d="M 50 200 L 100 180 L 150 150 L 200 120 L 250 140 L 300 100 L 350 110 L 350 250 L 50 250 Z" 
+                    class="chart-area" />
+              
+              <!-- Data points -->
+              <circle cx="50" cy="200" class="chart-dot" />
+              <circle cx="100" cy="180" class="chart-dot" />
+              <circle cx="150" cy="150" class="chart-dot" />
+              <circle cx="200" cy="120" class="chart-dot" />
+              <circle cx="250" cy="140" class="chart-dot" />
+              <circle cx="300" cy="100" class="chart-dot" />
+              <circle cx="350" cy="110" class="chart-dot" />
+              
+              <!-- Labels -->
+              <text x="50" y="270" class="chart-label">Mon</text>
+              <text x="100" y="270" class="chart-label">Tue</text>
+              <text x="150" y="270" class="chart-label">Wed</text>
+              <text x="200" y="270" class="chart-label">Thu</text>
+              <text x="250" y="270" class="chart-label">Fri</text>
+              <text x="300" y="270" class="chart-label">Sat</text>
+              <text x="350" y="270" class="chart-label">Sun</text>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Order Status Distribution -->
+        <div class="chart-container">
+          <h3>🎯 Current Status Distribution</h3>
+          <div class="status-grid">
+            <div class="status-item">
+              <div class="status-circle pending" id="status-pending">12</div>
+              <div class="status-label">Pending</div>
+            </div>
+            <div class="status-item">
+              <div class="status-circle accepted" id="status-accepted">8</div>
+              <div class="status-label">Processing</div>
+            </div>
+            <div class="status-item">
+              <div class="status-circle completed" id="status-completed">15</div>
+              <div class="status-label">Completed</div>
+            </div>
+            <div class="status-item">
+              <div class="status-circle shipped" id="status-shipped">52</div>
+              <div class="status-label">Shipped</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Product Performance -->
+    <section class="analytics-section">
+      <h2>
+        🏆 Product Performance Analysis
+        <div class="export-controls">
+          <button class="export-btn" onclick="exportData('csv')">
+            📄 Export CSV
+          </button>
+          <button class="export-btn" onclick="exportData('pdf')">
+            📋 Export PDF
+          </button>
+          <button class="export-btn" onclick="printReport()">
+            🖨️ Print Report
+          </button>
+        </div>
+      </h2>
+      
+      <div class="chart-container">
+        <table class="performance-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Orders</th>
+              <th>Units Sold</th>
+              <th>Revenue</th>
+              <th>Avg Order Size</th>
+              <th>Trend</th>
+            </tr>
+          </thead>
+          <tbody id="performance-table-body">
+            <tr>
+              <td><strong>Koru Beanies</strong></td>
+              <td>34</td>
+              <td>127</td>
+              <td>$8,890</td>
+              <td>3.7 units</td>
+              <td><span class="metric-trend up">+22%</span></td>
+            </tr>
+            <tr>
+              <td><strong>Alpine Jackets</strong></td>
+              <td>28</td>
+              <td>85</td>
+              <td>$12,750</td>
+              <td>3.0 units</td>
+              <td><span class="metric-trend up">+15%</span></td>
+            </tr>
+            <tr>
+              <td><strong>Tongariro Shawls</strong></td>
+              <td>19</td>
+              <td>42</td>
+              <td>$2,520</td>
+              <td>2.2 units</td>
+              <td><span class="metric-trend up">+8%</span></td>
+            </tr>
+            <tr>
+              <td><strong>House Socks</strong></td>
+              <td>6</td>
+              <td>24</td>
+              <td>$480</td>
+              <td>4.0 units</td>
+              <td><span class="metric-trend down">-5%</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Performance Analytics -->
+    <section class="analytics-section">
+      <h2>⚡ Operational Performance</h2>
+      
+      <div class="chart-grid">
+        <div class="chart-container">
+          <h3>⏱️ Processing Time Trends</h3>
+          <div class="chart-placeholder">
+            📊 Processing time improvements over the last 30 days<br>
+            <small>Average: 18.2 hours (down from 22.4 hours)</small>
+          </div>
+        </div>
+        
+        <div class="chart-container">
+          <h3>🚚 Shipping Carrier Distribution</h3>
+          <div style="padding: 20px 0;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+              <span>DHL Express</span>
+              <span><strong>45%</strong></span>
+            </div>
+            <div style="background: #e9ecef; height: 8px; border-radius: 4px; margin-bottom: 16px;">
+              <div style="background: #007bff; height: 100%; width: 45%; border-radius: 4px;"></div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+              <span>NZ Post</span>
+              <span><strong>28%</strong></span>
+            </div>
+            <div style="background: #e9ecef; height: 8px; border-radius: 4px; margin-bottom: 16px;">
+              <div style="background: #28a745; height: 100%; width: 28%; border-radius: 4px;"></div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+              <span>FedEx</span>
+              <span><strong>18%</strong></span>
+            </div>
+            <div style="background: #e9ecef; height: 8px; border-radius: 4px; margin-bottom: 16px;">
+              <div style="background: #6f42c1; height: 100%; width: 18%; border-radius: 4px;"></div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+              <span>UPS</span>
+              <span><strong>9%</strong></span>
+            </div>
+            <div style="background: #e9ecef; height: 8px; border-radius: 4px;">
+              <div style="background: #fd7e14; height: 100%; width: 9%; border-radius: 4px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Active page management script -->
+  <script>
+    // Set active nav item for current page
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentPage = window.location.pathname.split('/').pop();
+      const navLinks = document.querySelectorAll('.site-nav a');
+      
+      // Remove active class from all links
+      navLinks.forEach(link => link.classList.remove('active'));
+      
+      // Add active class to current page link
+      const pageMap = {
+        'orders.html': '.orders-nav',
+        'packaging.html': '.packaging-nav', 
+        'progress.html': '.progress-nav',
+        'shipping.html': '.shipping-nav',
+        'analytics.html': '.analytics-nav'
+      };
+      
+      const activeSelector = pageMap[currentPage] || '.analytics-nav';
+      const activeLink = document.querySelector(activeSelector);
+      if (activeLink) {
+        activeLink.classList.add('active');
+      }
+    });
+
+    // Time filter functionality
+    document.querySelectorAll('.time-filter').forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove active class from all buttons
+        document.querySelectorAll('.time-filter').forEach(btn => btn.classList.remove('active'));
+        // Add active class to clicked button
+        button.classList.add('active');
+        
+        // Update metrics based on selected period
+        updateMetricsForPeriod(button.dataset.period);
+      });
+    });
+
+    function updateMetricsForPeriod(period) {
+      // This would normally fetch real data for the selected period
+      const metrics = {
+        '7d': {
+          revenue: '$24,750',
+          orders: '87',
+          items: '432',
+          time: '18.2'
+        },
+        '30d': {
+          revenue: '$89,240',
+          orders: '312',
+          items: '1,547',
+          time: '19.8'
+        },
+        '90d': {
+          revenue: '$267,890',
+          orders: '891',
+          items: '4,392',
+          time: '21.5'
+        }
+      };
+      
+      const data = metrics[period];
+      if (data) {
+        document.getElementById('revenue-value').textContent = data.revenue;
+        document.getElementById('orders-value').textContent = data.orders;
+        document.getElementById('items-value').textContent = data.items;
+        document.getElementById('time-value').textContent = data.time;
+      }
+    }
+
+    // Export functions
+    function exportData(format) {
+      if (format === 'csv') {
+        // Generate CSV data
+        const csvData = `Product,Orders,Units Sold,Revenue,Avg Order Size,Trend
+Koru Beanies,34,127,"$8,890",3.7,+22%
+Alpine Jackets,28,85,"$12,750",3.0,+15%
+Tongariro Shawls,19,42,"$2,520",2.2,+8%
+House Socks,6,24,$480,4.0,-5%`;
+        
+        downloadFile(csvData, 'mount-kiwi-analytics.csv', 'text/csv');
+      } else if (format === 'pdf') {
+        alert('PDF export would be implemented with a library like jsPDF');
+      }
+    }
+
+    function printReport() {
+      window.print();
+    }
+
+    function downloadFile(content, filename, contentType) {
+      const blob = new Blob([content], { type: contentType });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    }
+  </script>
+
+  <!-- Main analytics functionality -->
+  <script type="module">
+    console.log('🔥 Analytics page loading...');
+    
+    try {
+      // Import required modules
+      console.log('📦 Importing modules...');
+      
+      const { fetchAllOrders } = await import('./js/order-model.js');
+      const { formatDateToNZ, formatDateTime } = await import('./js/utils.js');
+      
+      console.log('✅ All modules imported');
+      
+      // Initialize analytics dashboard
+      await initAnalyticsDashboard();
+      
+      async function initAnalyticsDashboard() {
+        console.log('🏗️ Initializing analytics dashboard...');
+        
+        try {
+          // Fetch all orders for analysis
+          const allOrders = await fetchAllOrders();
+          console.log(`📊 Loaded ${allOrders.length} orders for analysis`);
+          
+          // Update real-time status counts
+          updateStatusCounts(allOrders);
+          
+          // Generate insights based on actual data
+          generateInsights(allOrders);
+          
+          console.log('✅ Analytics dashboard initialized with real data');
+          
+        } catch (error) {
+          console.warn('⚠️ Using mock data for analytics:', error.message);
+          // If real data fails, keep the mock data that's already displayed
+        }
+      }
+      
+      function updateStatusCounts(orders) {
+        const statusCounts = {
+          pending: 0,
+          accepted: 0,
+          completed: 0,
+          shipped: 0
+        };
+        
+        orders.forEach(order => {
+          if (statusCounts.hasOwnProperty(order.status)) {
+            statusCounts[order.status]++;
+          }
+        });
+        
+        // Update the status circles with real data
+        document.getElementById('status-pending').textContent = statusCounts.pending;
+        document.getElementById('status-accepted').textContent = statusCounts.accepted;
+        document.getElementById('status-completed').textContent = statusCounts.completed;
+        document.getElementById('status-shipped').textContent = statusCounts.shipped;
+        
+        console.log('📊 Status counts updated:', statusCounts);
+      }
+      
+      function generateInsights(orders) {
+        const insights = [];
+        
+        // Calculate some basic analytics
+        const totalOrders = orders.length;
+        const completedOrders = orders.filter(o => o.status === 'completed' || o.status === 'shipped').length;
+        const completionRate = totalOrders > 0 ? Math.round((completedOrders / totalOrders) * 100) : 0;
+        
+        // Add insights based on real data
+        if (totalOrders > 0) {
+          insights.push({
+            icon: '📊',
+            title: 'Order Completion',
+            text: `${completionRate}% of orders have been completed or shipped - ${completionRate > 80 ? 'excellent' : completionRate > 60 ? 'good' : 'needs improvement'} performance!`
+          });
+        }
+        
+        if (orders.length >= 5) {
+          insights.push({
+            icon: '🎯',
+            title: 'System Usage',
+            text: `You have ${totalOrders} orders in the system. The workflow is being actively used!`
+          });
+        }
+        
+        // Update insights panel if we have real insights
+        if (insights.length > 0) {
+          const insightsContainer = document.getElementById('insights-content');
+          const realInsights = insights.map(insight => `
+            <div class="insight-item">
+              <strong>${insight.icon} ${insight.title}:</strong> ${insight.text}
+            </div>
+          `).join('');
+          
+          // Keep some mock insights and add real ones
+          insightsContainer.innerHTML = realInsights + insightsContainer.innerHTML;
+        }
+      }
+      
+    } catch (error) {
+      console.error('❌ Analytics page initialization failed:', error);
+      
+      // Don't replace the entire page on error, just log it
+      console.log('📊 Continuing with mock analytics data');
+    }
+  </script>
+</body>
+</html>

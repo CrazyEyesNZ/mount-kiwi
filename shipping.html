@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mount Kiwi Shipping</title>
+  <!-- Fixed CSS path -->
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Shipping-specific styles */
+    .shipping-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .shipping-section {
+      margin-bottom: 40px;
+    }
+
+    .shipping-section h2 {
+      color: var(--primary);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Shipping Dashboard Cards */
+    .shipping-overview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .shipping-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .shipping-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .shipping-card.ready { border-top: 4px solid #28a745; }
+    .shipping-card.shipped { border-top: 4px solid #6f42c1; }
+    .shipping-card.urgent { border-top: 4px solid #dc3545; }
+    .shipping-card.today { border-top: 4px solid #007bff; }
+
+    .card-number {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .card-number.ready { color: #28a745; }
+    .card-number.shipped { color: #6f42c1; }
+    .card-number.urgent { color: #dc3545; }
+    .card-number.today { color: #007bff; }
+
+    .card-label {
+      font-size: 0.9rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .card-sublabel {
+      font-size: 0.8rem;
+      color: #999;
+    }
+
+    /* Order Cards for Shipping */
+    .shipping-order-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .shipping-order-card.urgent {
+      border-left: 4px solid #dc3545;
+      background: #fff5f5;
+    }
+
+    .shipping-order-card.today {
+      border-left: 4px solid #007bff;
+      background: #f0f8ff;
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .order-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .order-id {
+      font-family: monospace;
+      background: #f8f9fa;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      color: #495057;
+    }
+
+    .priority-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .priority-badge.urgent {
+      background: #dc3545;
+      color: white;
+    }
+
+    .priority-badge.today {
+      background: #007bff;
+      color: white;
+    }
+
+    .priority-badge.normal {
+      background: #6c757d;
+      color: white;
+    }
+
+    .order-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .detail-group {
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 6px;
+    }
+
+    .detail-label {
+      font-size: 0.8rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .detail-value {
+      font-size: 0.95rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .items-summary {
+      background: #e9ecef;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+
+    .items-summary h4 {
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+
+    .item-line {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 0.9rem;
+    }
+
+    /* Shipping Actions */
+    .shipping-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .carrier-select {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: white;
+      font-size: 0.9rem;
+      min-width: 120px;
+    }
+
+    .tracking-input {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.9rem;
+      min-width: 150px;
+      font-family: monospace;
+    }
+
+    .date-input {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .btn-ship {
+      background: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn-ship:hover {
+      background: #218838;
+      transform: translateY(-1px);
+    }
+
+    .btn-ship:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-print {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color 0.2s;
+    }
+
+    .btn-print:hover {
+      background: var(--primary);
+    }
+
+    /* Shipped Orders Section */
+    .shipped-order {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-left: 4px solid #6f42c1;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .shipped-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .tracking-link {
+      color: #007bff;
+      text-decoration: none;
+      font-family: monospace;
+      font-weight: 600;
+    }
+
+    .tracking-link:hover {
+      text-decoration: underline;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .shipping-container {
+        padding: 12px;
+      }
+      
+      .shipping-overview {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      
+      .order-details {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      
+      .shipping-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .carrier-select,
+      .tracking-input,
+      .date-input {
+        min-width: auto;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .shipping-overview {
+        grid-template-columns: 1fr;
+      }
+      
+      .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body data-page="shipping">
+  <!-- Updated header with icons -->
+  <header>
+    <div class="header-left">
+      <div class="logo">
+        <img src="assets/icons/logo.png" alt="Mount Kiwi Logo">
+      </div>
+      <h1>Mount Kiwi</h1>
+    </div>
+    
+    <!-- Site navigation with icons on the right -->
+    <nav class="site-nav">
+  <ul>
+    <li><a href="orders.html" class="orders-nav"><img src="assets/icons/order.png" class="site-nav-icon" alt=""><span>Orders</span></a></li>
+    <li><a href="intake.html" class="intake-nav"><img src="assets/icons/intake.png" class="site-nav-icon" alt=""><span>Intake</span></a></li>
+    <li><a href="progress.html" class="progress-nav"><img src="assets/icons/progress.png" class="site-nav-icon" alt=""><span>Progress</span></a></li>
+    <li><a href="packaging.html" class="packaging-nav"><img src="assets/icons/packaging.png" class="site-nav-icon" alt=""><span>Packaging</span></a></li>
+    <li><a href="shipping.html" class="shipping-nav active"><img src="assets/icons/shipping.png" class="site-nav-icon" alt=""><span>Shipping</span></a></li>
+    <li><a href="analytics.html" class="analytics-nav"><img src="assets/icons/analytics.png" class="site-nav-icon" alt=""><span>Analytics</span></a></li>
+  </ul>
+</nav>
+
+  </header>
+
+  <!-- Main content -->
+  <main class="shipping-container">
+    <h1 style="color: var(--primary); margin-bottom: 30px;">🚚 Shipping Management Dashboard</h1>
+    
+    <!-- Shipping Overview Cards -->
+    <div class="shipping-overview">
+      <div class="shipping-card ready">
+        <div class="card-number ready" id="ready-count">-</div>
+        <div class="card-label">Ready to Ship</div>
+        <div class="card-sublabel">Completed orders</div>
+      </div>
+      <div class="shipping-card today">
+        <div class="card-number today" id="today-count">-</div>
+        <div class="card-label">Ship Today</div>
+        <div class="card-sublabel">Due today</div>
+      </div>
+      <div class="shipping-card urgent">
+        <div class="card-number urgent" id="urgent-count">-</div>
+        <div class="card-label">Overdue</div>
+        <div class="card-sublabel">Past ship date</div>
+      </div>
+      <div class="shipping-card shipped">
+        <div class="card-number shipped" id="shipped-count">-</div>
+        <div class="card-label">Shipped Today</div>
+        <div class="card-sublabel">Sent out</div>
+      </div>
+    </div>
+
+    <!-- Ready to Ship Section -->
+    <section class="shipping-section">
+      <h2>📦 Ready to Ship</h2>
+      <div id="ready-to-ship-list">
+        <div class="empty-state">
+          <p>🔄 Loading orders ready to ship...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recently Shipped Section -->
+    <section class="shipping-section">
+      <h2>✅ Recently Shipped</h2>
+      <div id="shipped-orders-list">
+        <div class="empty-state">
+          <p>🔄 Loading shipped orders...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Shipping Label Modal -->
+  <div id="labelModal" class="modal" style="display: none;">
+    <div style="max-width: 600px; max-height: 80vh; overflow-y: auto;">
+      <h2>🏷️ Generate Shipping Label</h2>
+      <div id="label-content">
+        <div style="background: white; border: 2px solid #333; padding: 20px; margin: 20px 0; font-family: Arial, sans-serif;">
+          <div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 15px;">
+            <h3>MOUNT KIWI</h3>
+            <p>Premium New Zealand Knitwear</p>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+              <h4>FROM:</h4>
+              <p><strong>Mount Kiwi Ltd</strong><br>
+              123 Knitting Lane<br>
+              Taupo, New Zealand 3330<br>
+              Phone: +64 7 123 4567</p>
+            </div>
+            <div>
+              <h4>TO:</h4>
+              <p id="label-recipient">
+                <strong>[Customer Name]</strong><br>
+                [Address Line 1]<br>
+                [Address Line 2]<br>
+                [City, Country, Postal Code]
+              </p>
+            </div>
+          </div>
+          
+          <div style="margin: 20px 0; text-align: center;">
+            <div style="background: #000; color: white; padding: 10px; font-family: monospace; font-size: 18px; letter-spacing: 2px;">
+              <span id="label-tracking">TRACKING: [TRACKING_NUMBER]</span>
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-top: 1px solid #333; padding-top: 15px;">
+            <div>
+              <p><strong>Order #:</strong> <span id="label-order-id">[ORDER_ID]</span></p>
+              <p><strong>Ship Date:</strong> <span id="label-ship-date">[SHIP_DATE]</span></p>
+            </div>
+            <div>
+              <p><strong>Carrier:</strong> <span id="label-carrier">[CARRIER]</span></p>
+              <p><strong>Service:</strong> Standard Delivery</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div style="text-align: right; margin-top: 20px;">
+        <button onclick="printLabel()" class="btn-print">🖨️ Print Label</button>
+        <button onclick="closeModal('labelModal')" class="btn-print" style="margin-left: 8px; background: #6c757d;">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active page management script -->
+  <script>
+    // Set active nav item for current page
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentPage = window.location.pathname.split('/').pop();
+      const navLinks = document.querySelectorAll('.site-nav a');
+      
+      // Remove active class from all links
+      navLinks.forEach(link => link.classList.remove('active'));
+      
+      // Add active class to current page link
+      const pageMap = {
+        'orders.html': '.orders-nav',
+        'packaging.html': '.packaging-nav', 
+        'progress.html': '.progress-nav',
+        'shipping.html': '.shipping-nav',
+        'analytics.html': '.analytics-nav'
+      };
+      
+      const activeSelector = pageMap[currentPage] || '.shipping-nav';
+      const activeLink = document.querySelector(activeSelector);
+      if (activeLink) {
+        activeLink.classList.add('active');
+      }
+    });
+
+    // Modal functions
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    function printLabel() {
+      const labelContent = document.getElementById('label-content').innerHTML;
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Shipping Label</title>
+            <style>
+              body { margin: 0; padding: 20px; font-family: Arial, sans-serif; }
+              @media print { body { margin: 0; } }
+            </style>
+          </head>
+          <body>${labelContent}</body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    }
+  </script>
+
+  <!-- Main shipping functionality -->
+  <script type="module">
+    console.log('🔥 Shipping page loading...');
+    
+    try {
+      // Import required modules
+      console.log('📦 Importing modules...');
+      
+      const { fetchAllOrders, markShipped } = await import('./js/order-model.js');
+      const { formatDateToNZ, formatDateTime } = await import('./js/utils.js');
+      
+      console.log('✅ All modules imported');
+      
+      // Initialize shipping dashboard
+      await initShippingPage();
+      
+      async function initShippingPage() {
+        console.log('🏗️ Initializing shipping dashboard...');
+        
+        try {
+          // Fetch all orders
+          const allOrders = await fetchAllOrders();
+          console.log(`📊 Loaded ${allOrders.length} total orders`);
+          
+          // Filter orders by shipping status
+          const readyToShip = allOrders.filter(order => order.status === 'completed');
+          const recentlyShipped = allOrders.filter(order => order.status === 'shipped')
+            .sort((a, b) => {
+              const dateB = b.timestamps?.shipped?.toDate?.() || new Date(b.timestamps?.shipped || 0);
+              const dateA = a.timestamps?.shipped?.toDate?.() || new Date(a.timestamps?.shipped || 0);
+              return dateB - dateA;
+            })
+            .slice(0, 10); // Show last 10 shipped orders
+          
+          console.log(`📦 ${readyToShip.length} orders ready to ship`);
+          console.log(`✅ ${recentlyShipped.length} recently shipped orders`);
+          
+          // Update overview cards
+          updateOverviewCards(readyToShip, recentlyShipped);
+          
+          // Render shipping lists
+          renderReadyToShipList(readyToShip);
+          renderShippedOrdersList(recentlyShipped);
+          
+          console.log('✅ Shipping dashboard initialized');
+          
+        } catch (error) {
+          throw new Error(`Failed to load shipping data: ${error.message}`);
+        }
+      }
+      
+      function updateOverviewCards(readyOrders, shippedOrders) {
+        const today = new Date();
+        const todayStr = today.toISOString().split('T')[0];
+        
+        let todayCount = 0;
+        let urgentCount = 0;
+        let shippedTodayCount = 0;
+        
+        readyOrders.forEach(order => {
+          const shipDate = new Date(order.meta?.shipDate || '');
+          const shipDateStr = shipDate.toISOString().split('T')[0];
+          
+          if (shipDateStr === todayStr) {
+            todayCount++;
+          } else if (shipDate < today) {
+            urgentCount++;
+          }
+        });
+        
+        shippedOrders.forEach(order => {
+          const shippedDate = order.timestamps?.shipped?.toDate?.() || new Date(order.timestamps?.shipped || 0);
+          const shippedDateStr = shippedDate.toISOString().split('T')[0];
+          
+          if (shippedDateStr === todayStr) {
+            shippedTodayCount++;
+          }
+        });
+        
+        document.getElementById('ready-count').textContent = readyOrders.length;
+        document.getElementById('today-count').textContent = todayCount;
+        document.getElementById('urgent-count').textContent = urgentCount;
+        document.getElementById('shipped-count').textContent = shippedTodayCount;
+      }
+      
+      function renderReadyToShipList(orders) {
+        const container = document.getElementById('ready-to-ship-list');
+        
+        if (orders.length === 0) {
+          container.innerHTML = '<div class="empty-state"><p>✅ All orders have been shipped - great work!</p></div>';
+          return;
+        }
+        
+        // Sort by ship date (urgent first)
+        const sortedOrders = [...orders].sort((a, b) => {
+          const dateA = new Date(a.meta?.shipDate || '');
+          const dateB = new Date(b.meta?.shipDate || '');
+          return dateA - dateB;
+        });
+        
+        container.innerHTML = sortedOrders.map(order => createReadyToShipCard(order)).join('');
+      }
+      
+      function createReadyToShipCard(order) {
+        const today = new Date();
+        const shipDate = new Date(order.meta?.shipDate || '');
+        const isToday = shipDate.toDateString() === today.toDateString();
+        const isOverdue = shipDate < today;
+        
+        let cardClass = 'shipping-order-card';
+        let priorityClass = 'normal';
+        let priorityText = 'Normal';
+        
+        if (isOverdue) {
+          cardClass += ` urgent ${orderColorClass(order.id)}`;
+          priorityClass = 'urgent';
+          priorityText = 'Overdue';
+        } else if (isToday) {
+          cardClass += ' today';
+          priorityClass = 'today';
+          priorityText = 'Ship Today';
+        }
+        
+        const shortId = order.id.slice(-6);
+        const totalItems = calculateTotalItems(order);
+        const itemsSummary = createItemsSummary(order);
+        
+        return `
+          <div class="${cardClass}">
+            <div class="order-header">
+              <div>
+                <div class="order-title">${order.meta?.name || 'Untitled Order'}</div>
+                <span class="order-id">#${shortId}</span>
+              </div>
+              <span class="priority-badge ${priorityClass}">${priorityText}</span>
+            </div>
+            
+            <div class="order-details">
+              <div class="detail-group">
+                <div class="detail-label">Ship Date</div>
+                <div class="detail-value">${formatDateToNZ(order.meta?.shipDate)}</div>
+              </div>
+              <div class="detail-group">
+                <div class="detail-label">Method</div>
+                <div class="detail-value">${order.meta?.shipMethod || 'Standard'}</div>
+              </div>
+              <div class="detail-group">
+                <div class="detail-label">Total Items</div>
+                <div class="detail-value">${totalItems} pieces</div>
+              </div>
+              <div class="detail-group">
+                <div class="detail-label">Completed</div>
+                <div class="detail-value">${formatDateTime(order.timestamps?.completed)}</div>
+              </div>
+            </div>
+            
+            <div class="items-summary">
+              <h4>📦 Items to Ship</h4>
+              ${itemsSummary}
+            </div>
+            
+            <div class="shipping-actions">
+              <select class="carrier-select" data-order="${order.id}">
+                <option value="">Select Carrier</option>
+                <option value="DHL">DHL Express</option>
+                <option value="FedEx">FedEx</option>
+                <option value="UPS">UPS</option>
+                <option value="NZ Post">NZ Post</option>
+                <option value="CourierPost">CourierPost</option>
+              </select>
+              
+              <input type="text" class="tracking-input" placeholder="Tracking Number" data-order="${order.id}">
+              
+              <input type="date" class="date-input" value="${today.toISOString().split('T')[0]}" data-order="${order.id}">
+              
+              <button class="btn-ship" onclick="shipOrder('${order.id}')" data-order="${order.id}">
+                🚚 Ship Order
+              </button>
+              
+              <button class="btn-print" onclick="generateLabel('${order.id}')">
+                🏷️ Label
+              </button>
+            </div>
+          </div>
+        `;
+      }
+      
+      function renderShippedOrdersList(orders) {
+        const container = document.getElementById('shipped-orders-list');
+        
+        if (orders.length === 0) {
+          container.innerHTML = '<div class="empty-state"><p>📭 No recently shipped orders</p></div>';
+          return;
+        }
+        
+        container.innerHTML = orders.map(order => {
+          const shortId = order.id.slice(-6);
+          const shippedDate = order.timestamps?.shipped?.toDate?.() || new Date(order.timestamps?.shipped || 0);
+          const carrier = order.meta?.carrier || 'Unknown';
+          const trackingUrl = generateTrackingUrl(carrier, 'TRACK123456');
+          
+          return `
+            <div class="shipped-order">
+              <div class="shipped-header">
+                <div>
+                  <strong>${order.meta?.name || 'Order'} (#${shortId})</strong>
+                  <span style="margin-left: 12px; color: #666;">via ${carrier}</span>
+                </div>
+                <a href="${trackingUrl}" target="_blank" class="tracking-link">TRACK123456</a>
+              </div>
+              <div style="font-size: 0.9rem; color: #666;">
+                Shipped: ${formatDateTime(shippedDate)} • ${calculateTotalItems(order)} items
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+      
+      function calculateTotalItems(order) {
+        if (!order.items) return 0;
+        
+        if (Array.isArray(order.items)) {
+          return order.items.reduce((sum, item) => {
+            return sum + Object.values(item.sizes || {}).reduce((s, qty) => s + (qty || 0), 0);
+          }, 0);
+        } else {
+          return Object.values(order.items).reduce((sum, sizes) => {
+            return sum + Object.values(sizes).reduce((s, qty) => s + (qty || 0), 0);
+          }, 0);
+        }
+      }
+      
+      function createItemsSummary(order) {
+        if (!order.items) return '<em>No items found</em>';
+        
+        if (Array.isArray(order.items)) {
+          return order.items.map(item => {
+            const sizesText = Object.entries(item.sizes || {})
+              .map(([size, qty]) => `${size}(${qty})`)
+              .join(', ');
+            return `<div class="item-line"><span>${item.name || item.id}</span><span>${sizesText}</span></div>`;
+          }).join('');
+        } else {
+          return Object.entries(order.items).map(([productId, sizes]) => {
+            const sizesText = Object.entries(sizes)
+              .map(([size, qty]) => `${size}(${qty})`)
+              .join(', ');
+            return `<div class="item-line"><span>${productId}</span><span>${sizesText}</span></div>`;
+          }).join('');
+        }
+      }
+      
+      function generateTrackingUrl(carrier, trackingNumber) {
+        const urls = {
+          'DHL': `https://www.dhl.com/nz-en/home/tracking/tracking-express.html?submit=1&tracking-id=${trackingNumber}`,
+          'FedEx': `https://www.fedex.com/fedextrack/?tracknumbers=${trackingNumber}`,
+          'UPS': `https://www.ups.com/track?loc=en_US&tracknum=${trackingNumber}`,
+          'NZ Post': `https://tools.nzpost.co.nz/tracking/item/${trackingNumber}`,
+          'CourierPost': `https://www.courierpost.co.nz/tools/tracking?trackingId=${trackingNumber}`
+        };
+        return urls[carrier] || '#';
+      }
+      
+      // Global functions for button handlers
+      window.shipOrder = async function(orderId) {
+        const carrierSelect = document.querySelector(`select[data-order="${orderId}"]`);
+        const trackingInput = document.querySelector(`input.tracking-input[data-order="${orderId}"]`);
+        const dateInput = document.querySelector(`input.date-input[data-order="${orderId}"]`);
+        const shipButton = document.querySelector(`button[data-order="${orderId}"]`);
+        
+        const carrier = carrierSelect.value;
+        const trackingNumber = trackingInput.value.trim();
+        const shipDate = dateInput.value;
+        
+        if (!carrier) {
+          alert('Please select a carrier before shipping.');
+          return;
+        }
+        
+        if (!trackingNumber) {
+          alert('Please enter a tracking number.');
+          return;
+        }
+        
+        if (!shipDate) {
+          alert('Please select a ship date.');
+          return;
+        }
+        
+        shipButton.disabled = true;
+        shipButton.textContent = '⌛ Shipping...';
+        
+        try {
+          await markShipped(orderId, {
+            carrier: carrier,
+            trackingNumber: trackingNumber,
+            shippedDate: new Date(shipDate)
+          });
+          
+          console.log(`✅ Order ${orderId} marked as shipped`);
+          
+          // Refresh the page to update the lists
+          location.reload();
+          
+        } catch (error) {
+          console.error('❌ Failed to ship order:', error);
+          alert('Failed to ship order: ' + error.message);
+          
+          shipButton.disabled = false;
+          shipButton.textContent = '🚚 Ship Order';
+        }
+      };
+      
+      window.generateLabel = function(orderId) {
+        // This would normally fetch actual customer address data
+        document.getElementById('label-recipient').innerHTML = `
+          <strong>Sample Customer</strong><br>
+          123 Customer Street<br>
+          Customer City<br>
+          Auckland, New Zealand 1010
+        `;
+        document.getElementById('label-order-id').textContent = orderId.slice(-6);
+        document.getElementById('label-ship-date').textContent = new Date().toLocaleDateString();
+        document.getElementById('label-carrier').textContent = 'DHL Express';
+        document.getElementById('label-tracking').textContent = 'TRACKING: TRACK123456';
+        
+        document.getElementById('labelModal').style.display = 'block';
+      };
+      
+    } catch (error) {
+      console.error('❌ Shipping page initialization failed:', error);
+      
+      document.querySelector('.shipping-container').innerHTML = `
+        <div style="text-align: center; padding: 60px;">
+          <h3 style="color: #dc3545; margin-bottom: 16px;">⚠️ Unable to load shipping dashboard</h3>
+          <p style="margin-bottom: 16px; max-width: 500px; margin-left: auto; margin-right: auto;">
+            <strong>Error:</strong> ${error.message}
+          </p>
+          <button onclick="location.reload()" style="
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 4px; 
+            cursor: pointer;
+            font-size: 1rem;
+          ">
+            🔄 Try Again
+          </button>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

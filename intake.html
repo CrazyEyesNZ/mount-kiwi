@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mount Kiwi — Intake</title>
+
+  <!-- Global styles -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Page-specific light styles (order-card styles live in styles.css) -->
+  <style>
+    /* Intake container */
+    .intake-container {
+      margin: 0 auto;
+      max-width: 1200px;
+      padding: 20px;
+    }
+
+    /* Ensure intake order cards match the overlay exactly */
+.intake-pending-list .osu-pending-item {
+  background: #fff;
+  border: 1px solid var(--border, #e2e2e2);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  margin-bottom: 10px;
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
+  min-height: 80px; /* Ensure consistent height */
+  align-items: center;
+}
+
+/* Ensure the same title layout as overlay */
+.intake-pending-list .osu-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.intake-pending-list .osu-title .title-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.intake-pending-list .osu-title .title-main strong {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.intake-pending-list .osu-title .status-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Ensure consistent metadata styling */
+.intake-pending-list .osu-sub {
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.3;
+}
+
+/* Ensure buttons match overlay styling */
+.intake-pending-list .osu-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent, #8b7355);
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+  min-width: 80px;
+}
+
+.intake-pending-list .osu-btn:hover {
+  background: var(--primary, #4e4035);
+}
+
+/* Status badges consistency */
+.intake-pending-list .status-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.intake-pending-list .status-badge.submitted {
+  background: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+.intake-pending-list .status-timestamp {
+  font-size: 0.65rem;
+  color: #6c757d;
+  font-weight: 500;
+  background: #f8f9fa;
+  padding: 2px 6px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  white-space: nowrap;
+}
+
+/* Add to your intake.html <style> section */
+.intake-pending-list .status-badge.accepting {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+  animation: pulse 1s infinite;
+}
+
+.intake-pending-list .status-badge.locked {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+    /* Sections */
+    .intake-section {
+      margin-bottom: 40px;
+    }
+
+    .intake-section h2 {
+      border-bottom: 2px solid var(--accent);
+      color: var(--primary);
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+    }
+
+    /* Stats tiles */
+    .stats-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--light-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      min-width: 120px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-number {
+      color: var(--primary);
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .stat-label {
+      color: #666;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    /* Empty state */
+    .empty-state {
+      color: #666;
+      font-style: italic;
+      padding: 40px;
+      text-align: center;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 768px) {
+      .intake-container { padding: 12px; }
+      .stats-summary { justify-content: center; }
+    }
+  </style>
+</head>
+<body data-page="intake">
+  <!-- Header -->
+  <header>
+    <div class="header-left">
+      <div class="logo">
+        <img src="assets/icons/logo.png" alt="Mount Kiwi Logo" />
+      </div>
+      <h1>Mount Kiwi</h1>
+    </div>
+
+    <!-- Top navigation -->
+    <nav class="site-nav">
+      <ul>
+        <li>
+          <a href="orders.html" class="orders-nav">
+            <img src="assets/icons/order.png" alt="Orders" class="site-nav-icon" />
+            <span>Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="intake.html" class="intake-nav active">
+            <img src="assets/icons/intake.png" alt="Intake" class="site-nav-icon" />
+            <span>Intake</span>
+          </a>
+        </li>
+        <li>
+          <a href="progress.html" class="progress-nav">
+            <img src="assets/icons/progress.png" alt="Progress" class="site-nav-icon" />
+            <span>Progress</span>
+          </a>
+        </li>
+        <li>
+          <a href="packaging.html" class="packaging-nav">
+            <img src="assets/icons/packaging.png" alt="Packaging" class="site-nav-icon" />
+            <span>Packaging</span>
+          </a>
+        </li>
+        <li>
+          <a href="shipping.html" class="shipping-nav">
+            <img src="assets/icons/shipping.png" alt="Shipping" class="site-nav-icon" />
+            <span>Shipping</span>
+          </a>
+        </li>
+        <li>
+          <a href="analytics.html" class="analytics-nav">
+            <img src="assets/icons/analytics.png" alt="Analytics" class="site-nav-icon" />
+            <span>Analytics</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main content -->
+<main class="intake-container">
+  <h1 style="color: var(--primary); margin-bottom: 30px;">📋 Intake Dashboard</h1>
+
+  <!-- Stats -->
+  <div id="stats-summary" class="stats-summary">
+    <div class="stat-card">
+      <div class="stat-number" id="stat-pending">-</div>
+      <div class="stat-label">Pending Orders</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="stat-processing">-</div>
+      <div class="stat-label">In Process</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" id="stat-completed">-</div>
+      <div class="stat-label">Completed Today</div>
+    </div>
+  </div>
+
+  <!-- Pending Orders - USE EXACT SAME STRUCTURE AS ORDERS OVERLAY -->
+  <section class="osu-live">
+    <h3>📋 Pending Orders (Awaiting Acceptance)</h3>
+    <div id="pending-list" class="osu-pending">
+      <div class="empty-state">
+        Loading pending orders...
+      </div>
+    </div>
+  </section>
+
+  <!-- Processing -->
+  <section class="osu-live">
+    <h3>⚙️ In-Process Orders</h3>
+    <div id="processing-list" class="osu-pending">
+      <div class="empty-state">
+        No orders currently in process
+      </div>
+    </div>
+  </section>
+</main>
+
+</main>
+  <!-- Update Progress Modal (used when updating items in process) -->
+  <div id="updateModal" class="modal" style="display: none;">
+    <div style="max-width: 500px;">
+      <h2>Update Progress</h2>
+      <div id="update-form">
+        <p><strong>Order:</strong> <span id="update-order-id"></span></p>
+        <p><strong>Product:</strong> <span id="update-product-name"></span></p>
+
+        <div style="margin: 16px 0;">
+          <label>Completed Quantities:</label>
+          <div id="update-sizes"></div>
+        </div>
+
+        <div style="margin: 16px 0;">
+          <label>Notes:</label>
+          <textarea id="update-notes" placeholder="Add any notes about this update..." style="width: 100%; height: 60px; padding: 8px;"></textarea>
+        </div>
+
+        <div style="text-align: right; margin-top: 20px;">
+          <button id="save-update-btn" class="btn-accept">Save Update</button>
+          <button id="cancel-update-btn" class="btn-update" style="margin-left: 8px;">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Small inline: set active nav item -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentPage = window.location.pathname.split('/').pop();
+      const navLinks = document.querySelectorAll('.site-nav a');
+      navLinks.forEach(link => link.classList.remove('active'));
+      const pageMap = {
+        'orders.html': '.orders-nav',
+        'packaging.html': '.packaging-nav',
+        'progress.html': '.progress-nav',
+        'shipping.html': '.shipping-nav',
+        'analytics.html': '.analytics-nav'
+      };
+      const activeSelector = pageMap[currentPage] || '.intake-nav';
+      const activeLink = document.querySelector(activeSelector);
+      if (activeLink) activeLink.classList.add('active');
+    });
+  </script>
+
+  <!-- Page module: Intake UI (imports utils.js & order-model.js) -->
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

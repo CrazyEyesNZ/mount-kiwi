@@ -1,0 +1,1371 @@
+:root {
+  --primary: #4e4035;
+  --secondary: #6b5b47;
+  --accent: #8b7355;
+  --light-bg: #f9f6f1;
+  --border: #e0dfdb;
+  --text: #333;
+  --font-family: 'Segoe UI', sans-serif;
+}
+
+/* Global Resets */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100vh;
+  font-family: var(--font-family);
+  background: var(--light-bg);
+  color: var(--text);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* FIXED Header with properly sized navigation icons */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--primary);
+  color: white;
+  padding: 0 16px;
+  height: 64px;
+  position: relative;
+  z-index: 10000 !important; /* Higher than overlay's 9999 */
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-left .logo img {
+  width: 110px;
+  height: 52px;
+}
+
+.header-left h1 {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+/* Updated site navigation with properly sized icons */
+.site-nav {
+  display: flex;
+  align-items: center;
+}
+
+.site-nav ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 8px;
+}
+
+.site-nav li {
+  margin: 0;
+}
+
+.site-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 10px;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-size: 0.7rem;
+  font-weight: 500;
+  min-width: 50px;
+  text-align: center;
+}
+
+.site-nav a:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.site-nav a.active {
+  background: var(--accent);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* CRITICAL: Properly sized navigation icons */
+.site-nav-icon {
+  width: 20px !important;
+  height: 20px !important;
+  object-fit: contain;
+  transition: filter 0.2s ease;
+  display: block;
+}
+
+
+/* Product navigation stays in center */
+.product-navigation {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.product-navigation button {
+  background: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-navigation button img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.product-navigation button:hover {
+  background: var(--light-bg);
+  transform: translateY(-1px);
+}
+
+.nav-icon {
+  position: relative;
+}
+
+/* Tooltip styles for navigation icons */
+.nav-icon::before {
+  content: attr(aria-label);
+  position: absolute;
+  bottom: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* Tooltip arrow */
+.nav-icon::after {
+  content: '';
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 4px solid var(--primary);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* Show tooltip on hover */
+.nav-icon:hover::before,
+.nav-icon:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.nav-icon.active {
+  background-color: #8b7355 !important;
+}
+
+/* Active icon indicator - override the tooltip arrow when active */
+.nav-icon.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  opacity: 1;
+  visibility: visible;
+  border: none;
+}
+
+.product-navigation button.active {
+  background-color: var(--accent) !important;
+}
+
+/* === Status bar layout === */
+#statusArea {
+  display: grid !important;
+  grid-template-columns: 1fr auto !important; /* meta left, counts right */
+  align-items: center !important;
+  background: var(--secondary);
+  color: #fff;
+  padding: 4px 16px;
+  font-size: 0.9rem;
+  position: relative;
+  z-index: 30;
+  column-gap: 12px;
+}
+
+#statusArea .status-counts {
+  justify-self: end !important;   /* dock to the right edge */
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.status-meta {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.status-meta .meta-pill {
+  background: rgba(255,255,255,0.12);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+/* Main Container */
+.app-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+#productPanel {
+  flex: 2.5;
+  overflow-y: auto;
+  padding: 0 16px 16px 16px; /* Remove top padding */
+  margin-top: 10px; /* 10px gap below header */
+  background: white;
+  scroll-behavior: smooth;
+}
+
+#currentOrder {
+  flex: 1.5;
+  overflow-y: auto;
+  padding: 16px;
+  background: white;
+  border-left: 1px solid var(--border);
+}
+
+/* Product Sections */
+.product-section {
+  margin-bottom: 24px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow: visible;
+  position: relative;
+  scroll-margin-top: 100px; /* Account for sticky header when scrolling */
+}
+
+.section-header {
+  display: grid;
+  align-items: center;
+  background: var(--secondary);
+  color: white;
+  padding: 8px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  gap: 16px;
+  position: sticky;
+  top: 0; /* Stick to top of scroll container */
+  z-index: 20;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-header .icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.section-header .title-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.section-header .title {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.section-header .product-type {
+  font-size: 0.85rem;
+  font-weight: 400;
+  opacity: 0.9;
+  line-height: 1;
+}
+
+.section-header .size-label {
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Table rows and totals share the same grid settings */
+.colour-row,
+.totals-row {
+  display: grid;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  gap: 16px;
+}
+
+.colour-row {
+  background: white;
+}
+
+.totals-row {
+  background: #d7cbbc;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.totals-row .label {
+  font-size: 1rem;
+}
+
+/* Single-size rows use a simpler 3-column grid */
+.single-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 80px;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  gap: 16px;
+}
+
+/* Inputs & Buttons */
+.size-input {
+  width: 60px;
+  padding: 4px;
+  text-align: center;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.locked-order-banner {
+  background: linear-gradient(90deg, #dc3545, #c82333);
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Highlight inputs with values above 0 with pale green background */
+.size-input.has-value {
+  background-color: #e9f7e9 !important; /* Very pale green */
+  border-color: #b8e0b8 !important; /* Slightly greener border */
+}
+
+/* For locked orders, show pale red instead of green for values above 0 */
+.size-input:disabled.has-value {
+  background-color: #fff5f5 !important; /* Very pale red */
+  border-color: #f5c6cb !important; /* Slightly red border */
+  color: #721c24 !important; /* Darker red text */
+}
+
+/* Standard disabled styling for zero values */
+.size-input:disabled {
+  background-color: #f8f9fa !important;
+  color: #6c757d !important;
+  cursor: not-allowed !important;
+  border-color: #dee2e6 !important;
+}
+
+.note-btn {
+  background: var(--secondary);
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.note-btn:hover {
+  background: var(--accent);
+}
+
+/* Current Order List */
+#currentOrder h2 {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+
+.current-order-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--border);
+}
+
+.size-badge {
+  display: inline-block;
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  margin: 2px 4px 2px 0;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal > div {
+  background: white;
+  padding: 16px;
+  border-radius: 6px;
+  width: 90%;
+  max-width: 400px;
+}
+
+.modal textarea {
+  width: 100%;
+  height: 120px;
+  padding: 8px;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+}
+
+.modal button {
+  margin-right: 8px;
+  padding: 6px 12px;
+}
+
+.colour-swatch {
+  width: 25px;
+  height: 25px;
+  object-fit: cover;
+}
+
+.product-picture {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+.product-picture.fallback-image {
+  border: 2px dashed var(--accent);
+  opacity: 0.7;
+  background-color: var(--light-bg);
+}
+
+.product-picture.fallback-image:hover {
+  opacity: 1;
+  border-color: var(--secondary);
+}
+
+.variety-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.colour-text {
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+/* Responsive Tweaks */
+@media(max-width: 768px) {
+  header {
+    height: 56px;
+    padding: 0 12px;
+  }
+  
+  .site-nav a {
+    padding: 4px 6px;
+    font-size: 0.65rem;
+    min-width: 44px;
+    gap: 1px;
+  }
+  
+  .site-nav-icon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  
+  .header-left h1 {
+    font-size: 1.1rem;
+  }
+  
+  .header-left .logo img {
+    width: 90px;
+    height: 42px;
+  }
+  
+  .product-navigation {
+    gap: 4px;
+  }
+
+  .product-navigation button {
+    padding: 4px 6px;
+  }
+
+  .product-navigation button img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .single-row {
+    grid-template-columns: 32px 1fr auto;
+  }
+
+  .section-header .size-label {
+    font-size: 0.8rem;
+  }
+
+  .section-header .title {
+    font-size: 0.9rem;
+  }
+
+  .section-header .product-type {
+    font-size: 0.75rem;
+  }
+
+  .product-picture,
+  .product-picture.fallback-image {
+    width: 35px;
+    height: 35px;
+  }
+
+  .variety-name {
+    font-size: 0.8rem;
+  }
+
+  .colour-text {
+    font-size: 0.75rem;
+  }
+
+  /* Adjust sticky header top position for mobile */
+  .section-header {
+    top: 0; /* Stick to top of scroll container */
+  }
+
+  /* Adjust tooltip positioning for mobile */
+  .nav-icon::before {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+    bottom: -32px;
+  }
+
+  .nav-icon::after {
+    bottom: -27px;
+  }
+}
+
+@media(max-width: 480px) {
+  .site-nav a span {
+    display: none; /* Hide text on very small screens, show only icons */
+  }
+  
+  .site-nav a {
+    min-width: 36px;
+    padding: 6px;
+  }
+  
+  .site-nav-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+}
+
+/* Intake — Pending Order cards */
+/* Intake — compact order cards */
+.order-card {
+  background: #ffffff;
+  border: 1px solid var(--border, #e6e6e6);
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  margin: 8px 0;
+  padding: 10px 12px;
+}
+
+.order-card--compact .order-card__header {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin: 0;            /* no extra vertical space */
+}
+
+.order-card--compact .order-title {
+  align-items: baseline;
+  display: flex;
+  gap: 6px;
+  margin: 0;
+}
+
+.order-card--compact .order-name {
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.order-card--compact .order-id {
+  color: var(--muted, #6b7280);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.order-card--compact .meta-row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.order-card--compact .meta-row span {
+  color: #3a3a3a;
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.order-card--compact .meta-row span + span::before {
+  color: var(--muted, #9ca3af);
+  content: "•";
+  margin: 0 6px 0 2px;
+}
+
+/* Smaller accept button */
+.btn-accept.btn-accept--sm {
+  border-radius: 8px;
+  font-size: 0.85rem;
+  padding: 6px 10px;
+}
+
+/* Intake — acceptance timestamp (left of button) */
+.accept-stamp {
+  align-items: center;
+  color: var(--muted, #6b7280);
+  display: inline-flex;
+  font-size: 0.85rem;
+  font-weight: 600;
+  gap: 6px;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+.accept-stamp::before {
+  content: "⏱";
+  font-size: 0.9rem;
+}
+
+/* Enhanced overlay scrolling styles - add these to your styles.css */
+
+/* Order Setup Overlay - Fixed Scrolling */
+.orders-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: none; /* JS toggles to flex */
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.orders-overlay .overlay-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  width: min(900px, 95vw);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Fixed header */
+.overlay-card__header {
+  background: #fff;
+  border-bottom: 1px solid var(--border, #e6e6e6);
+  padding: 20px;
+  flex-shrink: 0;
+}
+
+.overlay-card__header h2 {
+  margin: 0;
+  color: var(--primary);
+}
+
+/* Form section within body */
+.overlay-form-section {
+  padding: 20px;
+  border-bottom: 1px solid var(--border, #e6e6e6);
+}
+
+/* Orders list section within body */
+.overlay-orders-section {
+  padding: 20px;
+}
+
+/* Fixed footer */
+.overlay-card__footer {
+  background: #fff;
+  border-top: 1px solid var(--border, #e6e6e6);
+  padding: 16px 20px;
+  flex-shrink: 0;
+}
+
+/* Form grid styling */
+.osu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.osu-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.osu-grid input,
+.osu-grid select {
+  padding: 8px 12px;
+  border: 1px solid var(--border, #d3d3d3);
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+/* Orders list styling */
+.orders-list {
+  max-height: none; /* Remove any height constraints */
+}
+
+/* Individual order items */
+.osu-pending-item {
+  background: #fff;
+  border: 1px solid var(--border, #e2e2e2);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  margin-bottom: 10px;
+  /* left colour bar is set by .order-color-* */
+  border-left: 4px solid var(--border, #e2e2e2) !important;
+}
+
+.osu-pending-item.osu-review {
+  border-left: 4px solid var(--accent, #8b7355);
+  background: #f5f2ee;
+}
+
+.osu-pending-item.osu-hanging {
+  margin-left: 24px;
+  border-left: 3px solid var(--accent, #8b7355);
+  background: #faf9f7;
+}
+
+/* Button styling */
+.osu-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent, #8b7355);
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.osu-btn:hover {
+  background: var(--primary, #4e4035);
+}
+
+.osu-btn.danger {
+  background: #dc3545;
+}
+
+.osu-btn.danger:hover {
+  background: #c82333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .orders-overlay {
+    padding: 10px;
+  }
+  
+  .overlay-card {
+    width: 100% !important;
+    max-height: 95vh !important;
+  }
+  
+  .osu-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .overlay-card__header,
+  .overlay-card__footer,
+  .overlay-form-section,
+  .overlay-orders-section {
+    padding: 16px;
+  }
+}
+
+/* Add these styles to your styles.css to fix navigation and remove cancel button */
+
+/* Increase header z-index to be above the overlay */
+body.modal-open header {
+  pointer-events: auto !important;
+}
+
+/* Optional: Adjust overlay backdrop to not cover header */
+#order-setup-overlay .osu-backdrop {
+  top: 64px; /* Height of your header */
+}
+
+/* Optional: Adjust overlay panel position to account for visible header */
+#order-setup-overlay .osu-panel {
+  margin-top: 80px; /* Give some space below the header */
+}
+
+/* Hide cancel button completely */
+#cancelPreorderBtn,
+button[onclick*="closeOrderOverlay"],
+.osu-actions-top button:first-child {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  /* Adjust for mobile header height */
+  #order-setup-overlay .osu-backdrop {
+    top: 56px;
+  }
+  
+  #order-setup-overlay .osu-panel {
+    margin-top: 70px;
+  }
+}
+
+/* Status info container */
+.status-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+/* Enhanced status badges */
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.status-badge.draft {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.status-badge.submitted {
+  background: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+.status-badge.locked {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.status-badge.completed,
+.status-badge.shipped {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+/* Status timestamps */
+.status-timestamp {
+  font-size: 0.65rem;
+  color: #6c757d;
+  font-weight: 500;
+  background: #f8f9fa;
+  padding: 2px 6px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  white-space: nowrap;
+}
+
+/* Edit button styling */
+.osu-btn.edit {
+  background: #28a745 !important;
+  color: #ffffff !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+  transition: all 0.2s ease !important;
+}
+
+.osu-btn.edit:hover {
+  background: #218838 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3) !important;
+}
+
+/* Enhanced view button for accepted orders */
+.osu-btn.view {
+  background: #6c757d !important;
+  color: #ffffff !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+  transition: all 0.2s ease !important;
+}
+
+.osu-btn.view:hover {
+  background: #5a6268 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3) !important;
+}
+
+/* Order card visual indicators */
+.osu-pending-item.osu-draft {
+  border-left: 4px solid #ffc107;
+  background: #fffef7;
+}
+
+.osu-pending-item.osu-submitted { background: #eef7ff; border-color: #d9ecff; }
+.osu-pending-item.osu-locked    { background: #fff3f3; }   /* keep grey/colour bar from order-color-* */
+.osu-pending-item.osu-processing{ background: #fff8e6; border-color: #ffedbf; }
+
+.osu-pending-item .order-title{
+  display:flex; align-items:baseline; gap:8px; margin:0;
+}
+
+.osu-pending-item .order-title .name{ font-weight:800; color:var(--text); }
+.osu-pending-item .order-title .id{ color:#888; font-size:.9rem; }
+.osu-pending-item .order-meta{
+  display:flex; gap:12px; flex-wrap:wrap; align-items:center; color:#555; font-size:.9rem;
+}
+
+.intake-order.osu-pending-item{
+  border-radius:12px; padding:12px 14px; margin-bottom:10px;
+}
+
+/* Enhanced submit button when order has items */
+#submitOrderBtn:not(:disabled) {
+  background: #28a745 !important;
+  box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3) !important;
+}
+
+#submitOrderBtn:not(:disabled):hover {
+  background: #218838 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4) !important;
+}
+
+#submitOrderBtn:disabled {
+  background: #6c757d !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Visual feedback for orders with items vs empty */
+.app-container:has(#currentOrder .order-group) #submitOrderBtn {
+  background: #28a745 !important;
+  animation: pulse-submit 2s infinite;
+}
+
+@keyframes pulse-submit {
+  0% { box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3); }
+  50% { box-shadow: 0 4px 12px rgba(40, 167, 69, 0.5); }
+  100% { box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3); }
+}
+
+/* Status area enhancement for draft orders */
+#statusArea:has(.status-meta .meta-pill:contains("DRAFT")) {
+  background: linear-gradient(90deg, var(--secondary), #ffc107);
+}
+
+/* Order overlay draft/submitted indicators */
+.osu-pending .osu-pending-item:first-child.osu-draft::before {
+  content: "Working on";
+  position: absolute;
+  top: -8px;
+  left: 12px;
+  background: #ffc107;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  z-index: 1;
+}
+
+/* Order overlay title layout fixes */
+.osu-title .title-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.osu-title .title-main strong {
+  flex: 1;
+  min-width: 0; /* Allow text to wrap if needed */
+}
+
+.osu-title .status-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0; /* Don't shrink the badges */
+}
+
+/* Body container - now has its own padding */
+.overlay-card__body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0;
+  min-height: 0;
+}
+
+/* Existing status badge and timestamp styles, updated for the overlay title */
+.status-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.status-timestamp {
+  font-size: 0.65rem;
+  color: #6c757d;
+  font-weight: 500;
+  background: #f8f9fa;
+  padding: 2px 6px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  white-space: nowrap;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .osu-title .title-main {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .osu-title .status-badges {
+    align-self: flex-start;
+  }
+}
+
+/* Ensure intake cards use the same title layout as Orders */
+.intake-order .osu-title .title-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.intake-order .osu-title .title-main strong {
+  flex: 1;
+  min-width: 0;
+}
+
+.intake-order .osu-title .status-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Responsive adjustments for intake cards */
+@media (max-width: 768px) {
+  .intake-order .osu-title .title-main {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .intake-order .osu-title .status-badges {
+    align-self: flex-start;
+  }
+}
+
+
+
+/* ===== IMPROVED ORDER COLOR SYSTEM - DISTINCT COLORS ===== */
+
+.osu-pending-item.order-color-red,
+.shipping-order-card.order-color-red,
+.order-box.order-color-red,
+tr.order-color-red {
+  border-left-color: #e74c3c !important; /* Bright Red */
+}
+
+.osu-pending-item.order-color-blue,
+.shipping-order-card.order-color-blue,
+.order-box.order-color-blue,
+tr.order-color-blue {
+  border-left-color: #3498db !important; /* Bright Blue */
+}
+
+.osu-pending-item.order-color-green,
+.shipping-order-card.order-color-green,
+.order-box.order-color-green,
+tr.order-color-green {
+  border-left-color: #27ae60 !important; /* True Green */
+}
+
+.osu-pending-item.order-color-orange,
+.shipping-order-card.order-color-orange,
+.order-box.order-color-orange,
+tr.order-color-orange {
+  border-left-color: #f39c12 !important; /* Orange */
+}
+
+.osu-pending-item.order-color-purple,
+.shipping-order-card.order-color-purple,
+.order-box.order-color-purple,
+tr.order-color-purple {
+  border-left-color: #9b59b6 !important; /* Purple */
+}
+
+.osu-pending-item.order-color-teal,
+.shipping-order-card.order-color-teal,
+.order-box.order-color-teal,
+tr.order-color-teal {
+  border-left-color: #e91e63 !important; /* Pink/Magenta - changed from teal */
+}
+
+.osu-pending-item.order-color-pink,
+.shipping-order-card.order-color-pink,
+.order-box.order-color-pink,
+tr.order-color-pink {
+  border-left-color: #ff5722 !important; /* Deep Orange - changed from pink */
+}
+
+.osu-pending-item.order-color-brown,
+.shipping-order-card.order-color-brown,
+.order-box.order-color-brown,
+tr.order-color-brown {
+  border-left-color: #795548 !important; /* Brown */
+}
+
+.osu-pending-item.order-color-cyan,
+.shipping-order-card.order-color-cyan,
+.order-box.order-color-cyan,
+tr.order-color-cyan {
+  border-left-color: #607d8b !important; /* Blue Grey - changed from cyan */
+}
+
+.osu-pending-item.order-color-lime,
+.shipping-order-card.order-color-lime,
+.order-box.order-color-lime,
+tr.order-color-lime {
+  border-left-color: #ffc107 !important; /* Amber/Yellow - changed from lime */
+}
+
+/* Ensure base border setup */
+.osu-pending-item,
+.shipping-order-card,
+.order-box {
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
+}
+
+/* Stacked buttons for processing orders */
+.intake-pending-list .osu-cta-col.stacked-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 90px;
+}
+
+.intake-pending-list .osu-cta-col.stacked-buttons .osu-btn {
+  width: 100%;
+  min-width: 90px;
+  padding: 8px 12px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* View button styling */
+.intake-pending-list .osu-btn.view {
+  background: var(--accent, #8b7355);
+  color: white;
+}
+
+.intake-pending-list .osu-btn.view:hover {
+  background: var(--primary, #4e4035);
+}
+
+/* Print button styling */
+.intake-pending-list .osu-btn.print {
+  background: #6c757d;
+  border-color: #6c757d;
+  color: white;
+}
+
+.intake-pending-list .osu-btn.print:hover {
+  background: #5a6268;
+  border-color: #545b62;
+}
+
+/* Shipment toggle + Submit under name */
+.ship-toggle-row {
+  display: inline-flex;
+  gap: 8px;
+}
+.ship-opt {
+  background: #fff;
+  color: #2c3e50;
+  border: 1px solid var(--border, #d0d5dd);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ship-opt.active {
+  background: #27ae60;
+  color: #fff;
+  border-color: #27ae60;
+}
+.submit-under-name {
+  background: #8b7355;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.submit-under-name:hover { background: #4e4035; }
+
+.submit-under-name:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.ship-method-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.ship-method-btn {
+  flex: 1;
+  padding: 8px 16px;
+  border: 1px solid var(--border, #d3d3d3);
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.ship-method-btn:hover {
+  background: #f8f9fa;
+}
+
+.ship-method-btn.active {
+  background: var(--accent);  /* Brown like the Resume button */
+  color: white;
+  border-color: var(--accent);
+}
+
+.osu-btn.primary {
+  background: white;  /* Start white like AIR/SEA buttons */
+  color: var(--text);
+  border: 1px solid var(--border, #d3d3d3);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-top: 8px;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.osu-btn.primary:hover:not(:disabled) {
+  background: #f8f9fa;
+}
+
+.osu-btn.primary:not(:disabled) {
+  background: var(--accent);  /* Turn brown when enabled */
+  color: white;
+  border-color: var(--accent);
+}
+
+.osu-btn.primary:not(:disabled):hover {
+  background: var(--primary);  /* Darker brown on hover */
+}
+
+.osu-btn.primary:disabled {
+  background: #6c757d;  /* Grey when disabled */
+  color: white;
+  cursor: not-allowed;
+  border-color: #6c757d;
+}
