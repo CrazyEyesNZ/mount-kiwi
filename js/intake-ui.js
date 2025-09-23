@@ -696,7 +696,7 @@ function getProductTypeIcon(variantKey) {
   const productType = variantKey.split(' - ')[0];
   
   // Base URL for your GitHub icons
-  const baseIconUrl = 'https://crazyeyesnz.github.io/mount-kiwi/assets/icons/';
+  const baseIconUrl = `${repoBase}assets/icons/`;
   
   // Map product types to icon filenames (based on your GitHub structure)
   let iconName = '';
@@ -843,6 +843,7 @@ function bindViewHandlers(container) {
     });
   });
 }
+
 
 
 
