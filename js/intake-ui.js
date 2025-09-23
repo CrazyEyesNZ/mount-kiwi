@@ -708,37 +708,31 @@ function getProductTypeIcon(variantKey) {
       iconName = 'Beanies.png';
       break;
     case 'COASTAL':
-      iconName = 'coastal.png';
+      iconName = 'Coastal.png';
       break;
     case 'STATION':
-      iconName = 'station.png';
+      iconName = 'Station.png';
       break;
     case 'VEST':
-      iconName = 'vest.png';
+      iconName = 'Vest.png';
       break;
     case 'SHAWLS':
-      iconName = 'shawls.png';
+      iconName = 'Shawls.png';
       break;
     case 'RAIN JACKET':
-      iconName = 'rain-jacket.png';
+      iconName = 'RainJacket.png';
       break;
     case 'WEEKENDER':
-      iconName = 'weekender.png';
+      iconName = 'Weekender.png';
       break;
     case 'KIDS JACKET':
-      iconName = 'kids-jacket.png';
-      break;
-    case 'SHERPA BEANIE':
-      iconName = 'sherpabeanie.png';
-      break;
-    case 'KORU BEANIE':
-      iconName = 'koru-beanie.png';
+      iconName = 'KidsJacket.png';
       break;
     case 'WOODVILLE STITCH':
-      iconName = 'woodville-stitch.png';
+      iconName = 'WoodvilleStitch.png';
       break;
     case 'HOUSE SOCKS':
-      iconName = 'house-socks.png';
+      iconName = 'HouseSocks.png';
       break;
     default:
       iconName = 'progress.png'; // Default fallback
@@ -849,6 +843,7 @@ function bindViewHandlers(container) {
     });
   });
 }
+
 
 
 
