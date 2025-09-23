@@ -702,10 +702,10 @@ function getProductTypeIcon(variantKey) {
   let iconName = '';
   switch (productType) {
     case 'JACKETS':
-      iconName = 'jackets.png';
+      iconName = 'Jackets.png';
       break;
     case 'BEANIES':
-      iconName = 'beanies.png';
+      iconName = 'Beanies.png';
       break;
     case 'COASTAL':
       iconName = 'coastal.png';
@@ -849,6 +849,7 @@ function bindViewHandlers(container) {
     });
   });
 }
+
 
 
 
