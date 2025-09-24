@@ -691,34 +691,32 @@ function generateVariantSection(variantKey, items) {
   `;
 }
 
-const ICON_BASE =
-  (typeof window !== 'undefined' && window.repoBase)
-    ? window.repoBase
-    : 'https://raw.githubusercontent.com/CrazyEyesNZ/mount-kiwi/main/Icons/';
+// Use site-relative path that works on GitHub Pages and locally from the published site
+const ICON_BASE = '/mount-kiwi/assets/icons/';
 
-function getProductTypeIcon(variantKey) {
-  const productType = (variantKey || '').split(' - ')[0];
+// Map PRODUCT TYPE -> exact filename in the repo (case-sensitive!)
+const ICON_MAP = {
+  'BEANIES':           'Beanies.png',
+  'COASTAL':           'Coastal.png',
+  'STATION':           'Station.png',
+  'VEST':              'Vest.png',
+  'SHAWLS':            'Shawls.png',
+  'RAIN JACKET':       'RainJacket.png',
+  'WEEKENDER':         'Weekender.png',
+  'KIDS JACKET':       'KidsJacket.png',
+  'SHERPA BEANIE':     'SherpaBeanie.png',
+  'KORU BEANIE':       'KoruBeanie.png',
+  'WOODVILLE STITCH':  'WoodvilleStitch.png',
+  'HOUSE SOCKS':       'HouseSocks.png',
+};
 
-  let iconName = '';
-  switch (productType) {
-    case 'JACKETS':          iconName = 'jackets.png'; break;
-    case 'BEANIES':          iconName = 'beanies.png'; break;
-    case 'COASTAL':          iconName = 'coastal.png'; break;
-    case 'STATION':          iconName = 'station.png'; break;
-    case 'VEST':             iconName = 'vest.png'; break;
-    case 'SHAWLS':           iconName = 'shawls.png'; break;
-    case 'RAIN JACKET':      iconName = 'rain-jacket.png'; break;
-    case 'WEEKENDER':        iconName = 'weekender.png'; break;
-    case 'KIDS JACKET':      iconName = 'kids-jacket.png'; break;
-    case 'SHERPA BEANIE':    iconName = 'sherpabeanie.png'; break;
-    case 'KORU BEANIE':      iconName = 'koru-beanie.png'; break;
-    case 'WOODVILLE STITCH': iconName = 'woodville-stitch.png'; break;
-    case 'HOUSE SOCKS':      iconName = 'house-socks.png'; break;
-    default:                 iconName = 'progress.png';
-  }
-
-  return `<img src="${ICON_BASE}${iconName}" alt="${productType}" class="product-icon">`;
+function getProductTypeIcon(variantKey = '') {
+  const productType = (variantKey.split(' - ')[0] || '').toUpperCase().trim();
+  const file = ICON_MAP[productType] || 'progress.png'; // fallback exists in same folder
+  const src  = ICON_BASE + file;
+  return `<img src="${src}" alt="${productType}" class="product-icon">`;
 }
+
 
 function extractFullVariantKey(productKey) {
   // Extract the full variant key from product keys like:
@@ -822,6 +820,7 @@ function bindViewHandlers(container) {
     });
   });
 }
+
 
 
 
