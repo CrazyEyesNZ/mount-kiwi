@@ -694,7 +694,7 @@ function generateVariantSection(variantKey, items) {
 const ICON_BASE =
   (typeof window !== 'undefined' && window.repoBase)
     ? window.repoBase
-    : '${repoBase}assets/icons/';
+    : 'https://raw.githubusercontent.com/CrazyEyesNZ/mount-kiwi/main/Icons/';
 
 function getProductTypeIcon(variantKey) {
   const productType = (variantKey || '').split(' - ')[0];
@@ -822,6 +822,7 @@ function bindViewHandlers(container) {
     });
   });
 }
+
 
 
 
