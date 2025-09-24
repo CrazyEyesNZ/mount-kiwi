@@ -691,54 +691,33 @@ function generateVariantSection(variantKey, items) {
   `;
 }
 
+const ICON_BASE =
+  (typeof window !== 'undefined' && window.repoBase)
+    ? window.repoBase
+    : '${repoBase}assets/icons/';
+
 function getProductTypeIcon(variantKey) {
-  // Extract the product type from the variant key and return appropriate icon HTML
-  const productType = variantKey.split(' - ')[0];
-  
-  // Base URL for your GitHub icons
-  const baseIconUrl = `${repoBase}assets/icons/`;
-  
-  // Map product types to icon filenames (based on your GitHub structure)
+  const productType = (variantKey || '').split(' - ')[0];
+
   let iconName = '';
   switch (productType) {
-    case 'JACKETS':
-      iconName = 'Jackets.png';
-      break;
-    case 'BEANIES':
-      iconName = 'Beanies.png';
-      break;
-    case 'COASTAL':
-      iconName = 'Coastal.png';
-      break;
-    case 'STATION':
-      iconName = 'Station.png';
-      break;
-    case 'VEST':
-      iconName = 'Vest.png';
-      break;
-    case 'SHAWLS':
-      iconName = 'Shawls.png';
-      break;
-    case 'RAIN JACKET':
-      iconName = 'RainJacket.png';
-      break;
-    case 'WEEKENDER':
-      iconName = 'Weekender.png';
-      break;
-    case 'KIDS JACKET':
-      iconName = 'KidsJacket.png';
-      break;
-    case 'WOODVILLE STITCH':
-      iconName = 'WoodvilleStitch.png';
-      break;
-    case 'HOUSE SOCKS':
-      iconName = 'HouseSocks.png';
-      break;
-    default:
-      iconName = 'progress.png'; // Default fallback
+    case 'JACKETS':          iconName = 'jackets.png'; break;
+    case 'BEANIES':          iconName = 'beanies.png'; break;
+    case 'COASTAL':          iconName = 'coastal.png'; break;
+    case 'STATION':          iconName = 'station.png'; break;
+    case 'VEST':             iconName = 'vest.png'; break;
+    case 'SHAWLS':           iconName = 'shawls.png'; break;
+    case 'RAIN JACKET':      iconName = 'rain-jacket.png'; break;
+    case 'WEEKENDER':        iconName = 'weekender.png'; break;
+    case 'KIDS JACKET':      iconName = 'kids-jacket.png'; break;
+    case 'SHERPA BEANIE':    iconName = 'sherpabeanie.png'; break;
+    case 'KORU BEANIE':      iconName = 'koru-beanie.png'; break;
+    case 'WOODVILLE STITCH': iconName = 'woodville-stitch.png'; break;
+    case 'HOUSE SOCKS':      iconName = 'house-socks.png'; break;
+    default:                 iconName = 'progress.png';
   }
-  
-  return `<img src="${baseIconUrl}${iconName}" alt="${productType}" class="product-icon">`;
+
+  return `<img src="${ICON_BASE}${iconName}" alt="${productType}" class="product-icon">`;
 }
 
 function extractFullVariantKey(productKey) {
@@ -843,6 +822,7 @@ function bindViewHandlers(container) {
     });
   });
 }
+
 
 
 
