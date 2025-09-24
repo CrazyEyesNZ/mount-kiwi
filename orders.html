@@ -88,7 +88,12 @@
 
     <!-- Right: current order -->
     <div id="currentOrder">
-      <h2>Current Order</h2>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h2 style="margin: 0;">Current Order</h2>
+        <button id="submitOrderBtn" class="submit-under-name" disabled>
+          Submit
+        </button>
+      </div>
       <div id="successMessages"></div>
     </div>
   </div>
@@ -110,7 +115,6 @@
   </div>
 
   <!-- Bootstrap the Orders page and dynamically create the pre-order overlay -->
-  <script type="module" src="./js/main.js"></script>
   <script type="module">
     import { initOrdersPage } from './js/orders-ui.js';
     initOrdersPage();

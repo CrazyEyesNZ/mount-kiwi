@@ -6,7 +6,7 @@ import { fetchProducts, loadHistory } from './data-service.js';
 import { updatePendingOrder, submitDraftOrder, subscribeDraftAndPendingOrders } from './order-model.js';
 import { renderProducts } from './render-products.js';
 import { ensureOrderContext } from './preorder-overlay.js';
-import { initOrderService, setOrderStorageSuffix } from './order-service.js';
+import { initOrderService, setOrderStorageSuffix, setViewOnlyMode } from './order-service.js';
 import { buildNavigation, initScrollTracking } from './navigation.js';
 import { initModals } from './modals.js';
 import { attachHistoryTooltips } from './tooltips.js';
@@ -162,10 +162,9 @@ export function populateFromItems(items) {
       return v ? v.textContent.trim() : '';
     };
     const getColourText = (row) => {
-  const c = row.querySelector('.colour-text') || row.querySelector('[data-colour-name]');
-  return c ? c.textContent.trim() : '';
-};
-
+      const c = row.querySelector('.colour-text') || row.querySelector('[data-colour-name]');
+      return c ? c.textContent.trim() : '';
+    };
 
     let target = rows.find(row => {
       const vtxt = getVarietyText(row);
@@ -204,46 +203,38 @@ async function onSubmitClick() {
   }
 
   const payload = collectOrderData();
-
   if (payload.total === 0) {
     alert('Cannot submit an empty order. Please add some items first.');
     return;
   }
 
-  // Ensure we have a shipment type picked
-  const picked = document.querySelector('.ship-opt.active')?.dataset.ship;
+  // Ship method is chosen in the OVERLAY (not on this page)
+  const picked = currentMeta?.shipMethod;
   if (!picked) {
-    alert('Please choose a Shipment Type (AIR or SEA) before submitting.');
+    alert('Please choose AIR or SEA in the Orders overlay first.');
     return;
   }
 
-  const ok = confirm(`Submit this order to Intake?\n\nShipment: ${picked}\nItems: ${payload.total}\nLines: ${payload.lines}`);
+  const ok = confirm(
+    `Submit this order to Intake?\n\nShipment: ${picked}\nItems: ${payload.total}\nLines: ${payload.lines}`
+  );
   if (!ok) return;
 
-  const submitBtn = document.querySelector('#submitOrderBtn');
-  if (submitBtn) {
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-  }
-
   try {
-    // persist latest meta (with ship method) + items
-    currentMeta = { ...(currentMeta || {}), shipMethod: picked };
     if (currentPendingId) {
-      await updatePendingOrder(currentPendingId, { meta: currentMeta, items: payload.items, total: payload.total });
+      await updatePendingOrder(currentPendingId, {
+        meta: { ...(currentMeta || {}), shipMethod: picked },
+        items: payload.items,
+        total: payload.total,
+      });
     }
 
     await submitDraftOrder(currentPendingId);
-
     console.log('[Submit] Success:', { id: currentPendingId, ...payload, shipMethod: picked });
     window.location.href = 'intake.html';
   } catch (err) {
     console.error('Submit error:', err);
-    alert('Could not submit the order: ' + err.message);
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit';
-    }
+    alert('Could not submit the order: ' + (err?.message || err));
   }
 }
 
@@ -261,6 +252,9 @@ export async function initOrdersPage() {
       setOrderStorageSuffix(currentPendingId);
     }
 
+    // Set view-only mode in order service so it can render appropriately
+    setViewOnlyMode(isViewOnlyMode);
+
     try { await loadHistory(); } catch {}
 
     const products = await fetchProducts();
@@ -269,9 +263,27 @@ export async function initOrdersPage() {
     initOrderService();
     buildNavigation(products);
     initScrollTracking();
-
+   
     // controls right under the title (only when editable)
     if (!isReviewMode && !isViewOnlyMode) {
+      // Wire up submit button
+      const submitBtn = document.querySelector('#submitOrderBtn');
+      if (submitBtn) {
+        submitBtn.addEventListener('click', onSubmitClick);
+        
+        // Enable/disable submit button based on order contents and shipment method
+        const updateSubmitButton = () => {
+          const { total } = collectOrderData();
+          const hasShipMethod = currentMeta?.shipMethod || false;
+          submitBtn.disabled = total === 0 || !hasShipMethod;
+        };
+        
+        // Initial check
+        updateSubmitButton();
+        
+        // Update when order changes
+        document.addEventListener('orderUpdated', updateSubmitButton);
+      }
     }
 
     try { initModals(); } catch {}
@@ -341,7 +353,15 @@ export async function initOrdersPage() {
       catch (err) { console.error('Error updating pending order:', err); }
     });
 
-    if (isViewOnlyMode) addViewOnlyIndicator();
+    if (isViewOnlyMode) {
+      addViewOnlyIndicator();
+      
+      // Hide submit button for locked orders
+      const submitBtn = document.querySelector('#submitOrderBtn');
+      if (submitBtn) {
+        submitBtn.style.display = 'none';
+      }
+    }
 
   } catch (err) {
     console.error('Orders page init failed:', err);

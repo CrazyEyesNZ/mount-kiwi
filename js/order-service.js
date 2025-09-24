@@ -11,6 +11,7 @@ let storageSuffix = ''; // e.g., _abc123 (pending order id)
 let currentOrder = {};
 let orderNotes   = {};
 let productOrder = [];
+let currentViewOnlyMode = false; // ADD: Track view-only mode
 
 // Store product metadata for rendering
 let productMetadata = {};
@@ -21,6 +22,11 @@ function keyWithSuffix(base) { return `${base}${storageSuffix}`; }
 export function setOrderStorageSuffix(id) {
   storageSuffix = id ? `_${id}` : '';
   reloadOrderFromStorage();
+}
+
+// ADD: Function to set view-only mode
+export function setViewOnlyMode(viewOnly) {
+  currentViewOnlyMode = viewOnly;
 }
 
 export function reloadOrderFromStorage() {
@@ -188,6 +194,10 @@ function clearInputField(key) {
       const input = row.querySelector(`input[data-size="${size}"]`);
       if (input) {
         input.value = 0;
+        // FIX: Remove the green styling class when value is 0
+        input.classList.remove('has-value');
+        // Also dispatch input event to trigger any other listeners
+        input.dispatchEvent(new Event('input', { bubbles: true }));
       }
       break;
     }
@@ -240,14 +250,16 @@ function renderCurrentOrder() {
   const orderPanel = document.getElementById("currentOrder");
   if (!orderPanel) return;
 
+  // Keep existing header wrapper (contains h2 + submit button) + success messages
+  const headerWrapper = orderPanel.querySelector("div:first-child"); // The flex div containing h2 + button
+  const successMessages = orderPanel.querySelector("#successMessages");
+  
   // Only render positive-qty lines
   const activeItems = Object.entries(currentOrder).filter(([k, q]) => q > 0);
 
-  // Keep existing header + any success messages
-  const header = orderPanel.querySelector("h2");
-  const successMessages = orderPanel.querySelector("#successMessages");
+  // Clear and rebuild, but preserve header and success messages
   orderPanel.innerHTML = "";
-  if (header) orderPanel.appendChild(header);
+  if (headerWrapper) orderPanel.appendChild(headerWrapper);
   if (successMessages) orderPanel.appendChild(successMessages);
 
   if (activeItems.length === 0) {
@@ -333,8 +345,12 @@ function renderCurrentOrder() {
     `;
     groupSection.appendChild(groupHeader);
 
-    // lines under this product
-    for (const itemData of Object.values(data.items)) {
+    // FIXED: lines under this product - sort varieties alphabetically
+    const sortedItems = Object.values(data.items).sort((a, b) => 
+      a.variety.localeCompare(b.variety)
+    );
+
+    for (const itemData of sortedItems) {
       const itemEl = document.createElement("div");
       itemEl.className = "order-item";
       itemEl.dataset.targetProduct = data.productId; // always section header
@@ -346,13 +362,14 @@ function renderCurrentOrder() {
 
       const itemTotal = Object.values(itemData.sizes).reduce((s, n) => s + n, 0);
 
+      // FIXED: Use currentViewOnlyMode instead of viewOnlyMode
       itemEl.innerHTML = `
         <div class="item-details">
           <span class="item-name">${itemData.variety} - ${itemData.colour}: ${sizeList}</span>
         </div>
         <div class="item-actions">
           <span class="item-total">${itemTotal}</span>
-          <button class="remove-item-group" data-keys="${itemData.keys.join(',')}">×</button>
+          ${currentViewOnlyMode ? '' : `<button class="remove-item-group" data-keys="${itemData.keys.join(',')}">×</button>`}
         </div>
       `;
       groupSection.appendChild(itemEl);
@@ -363,14 +380,16 @@ function renderCurrentOrder() {
 
   addOrderStyles();
 
-  // remove buttons
-  orderPanel.querySelectorAll(".remove-item-group").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const keys = (btn.dataset.keys || '').split(',').filter(Boolean);
-      if (keys.length) removeFromOrderMultiple(keys);
+  // remove buttons - only bind if not in view-only mode
+  if (!currentViewOnlyMode) {
+    orderPanel.querySelectorAll(".remove-item-group").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const keys = (btn.dataset.keys || '').split(',').filter(Boolean);
+        if (keys.length) removeFromOrderMultiple(keys);
+      });
     });
-  });
+  }
 
   // delegated click → scroll to section header (like nav)
   if (!orderPanel.dataset.hasClickHandler) {
@@ -401,7 +420,6 @@ function renderCurrentOrder() {
     orderPanel.dataset.hasClickHandler = "true";
   }
 }
-
 
 /**
  * Add CSS styles for the current order display
@@ -559,4 +577,11 @@ export function initOrderService() {
       addToOrder(key, qty);
     }
   });
+
+  // Auto-select all text when clicking/focusing on size inputs
+  document.addEventListener("focus", (e) => {
+    if (e.target.matches(".size-input")) {
+      e.target.select();
+    }
+  }, true); // Use capture phase to ensure it runs before other focus handlers
 }
