@@ -28,11 +28,11 @@
   {
     "type": "Shawls",
     "varieties": [
-      { "name": "Aqua Marine", "colours": ["Base"], "sizes": ["One"] },
-      { "name": "Black",       "colours": ["Base"], "sizes": ["One"] },
-      { "name": "Chai",        "colours": ["Base"], "sizes": ["One"] },
-      { "name": "Charcoal",    "colours": ["Base"], "sizes": ["One"] },
-      { "name": "Cream",       "colours": ["Base"], "sizes": ["One"] },
+      { "name": "Aqua Marine", "colours": [""], "sizes": [""] },
+      { "name": "Black",       "colours": [""], "sizes": [""] },
+      { "name": "Chai",        "colours": [""], "sizes": [""] },
+      { "name": "Charcoal",    "colours": [""], "sizes": ["One"] },
+      { "name": "Cream",       "colours": [""], "sizes": ["One"] },
       { "name": "Forest",      "colours": ["Base"], "sizes": ["One"] },
       { "name": "Grey",        "colours": ["Base"], "sizes": ["One"] },
       { "name": "Navy",        "colours": ["Base"], "sizes": ["One"] },
